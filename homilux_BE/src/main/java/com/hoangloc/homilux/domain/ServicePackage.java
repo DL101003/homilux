@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hoangloc.homilux.util.EventType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class ServicePackage {
 
     private String name;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +38,8 @@ public class ServicePackage {
     @JsonIgnoreProperties("servicePackages")
     private List<ServiceItem> serviceItems;
 
-    private Double price;
+    @PositiveOrZero
+    private BigDecimal price;
 
     private boolean active = true;
 
