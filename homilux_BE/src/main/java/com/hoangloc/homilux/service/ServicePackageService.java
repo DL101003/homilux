@@ -7,6 +7,7 @@ import com.hoangloc.homilux.domain.dto.ServicePackageDto;
 import com.hoangloc.homilux.domain.dto.ServicePackageUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
+import com.hoangloc.homilux.repository.ServiceItemRepository;
 import com.hoangloc.homilux.repository.ServicePackageRepository;
 import org.springframework.stereotype.Service;
 
