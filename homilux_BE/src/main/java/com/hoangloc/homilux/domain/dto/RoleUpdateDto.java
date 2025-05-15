@@ -4,14 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
-public class UserDto {
+public class RoleUpdateDto {
     private Long id;
-    private String email;
-    private String username;
-    private Long roleId;
-    private Instant createdAt;
+    private String name;
+    private Set<Long> permissionIds;
     private Instant updatedAt;
 }

@@ -1,12 +1,14 @@
 package com.hoangloc.homilux.service;
 
 
+import com.hoangloc.homilux.domain.Role;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.UserCreateDto;
 import com.hoangloc.homilux.domain.dto.UserUpdateDto;
 import com.hoangloc.homilux.domain.dto.UserDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
+import com.hoangloc.homilux.repository.RoleRepository;
 import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public UserCreateDto createUser(User user) {
@@ -32,8 +36,10 @@ public class UserService {
         if (userRepository.existsByEmailAndDeletedFalse(user.getEmail())) {
             throw new ResourceAlreadyExistsException("Người dùng", "email", user.getEmail());
         }
+        Role role = roleRepository.findByIdAndDeletedFalse(user.getRole().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", user.getRole().getId()));
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setDeleted(false);
         User savedUser = userRepository.save(user);
         return toCreateDto(savedUser);
     }
@@ -52,13 +58,32 @@ public class UserService {
     }
 
     public UserUpdateDto updateUser(User updatedUser) {
+        if (updatedUser.getId() == null) {
+            throw new IllegalArgumentException("ID người dùng không được để trống!");
+        }
         User user = userRepository.findByIdAndDeletedFalse(updatedUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedUser.getId()));
-        if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(user.getUsername())) {
-            if (userRepository.existsByUsernameAndDeletedFalse(updatedUser.getUsername())) {
-                throw new ResourceAlreadyExistsException("Người dùng", "tên người dùng", updatedUser.getUsername());
-            }
+        if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(user.getUsername()) &&
+                userRepository.existsByUsernameAndDeletedFalse(updatedUser.getUsername())) {
+            throw new ResourceAlreadyExistsException("Người dùng", "tên đăng nhập", updatedUser.getUsername());
+        }
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(user.getEmail()) &&
+                userRepository.existsByEmailAndDeletedFalse(updatedUser.getEmail())) {
+            throw new ResourceAlreadyExistsException("Người dùng", "email", updatedUser.getEmail());
+        }
+        if (updatedUser.getUsername() != null) {
             user.setUsername(updatedUser.getUsername());
+        }
+        if (updatedUser.getEmail() != null) {
+            user.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getPassword() != null) {
+            user.setPassword(updatedUser.getPassword());
+        }
+        if (updatedUser.getRole() != null && updatedUser.getRole().getId() != null) {
+            Role role = roleRepository.findByIdAndDeletedFalse(updatedUser.getRole().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", updatedUser.getRole().getId()));
+            user.setRole(role);
         }
         User savedUser = userRepository.save(user);
         return toUpdateDto(savedUser);
@@ -76,6 +101,7 @@ public class UserService {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
+        dto.setRoleId(user.getRole().getId());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
@@ -86,6 +112,7 @@ public class UserService {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
+        dto.setRoleId(user.getRole().getId());
         dto.setCreatedAt(user.getCreatedAt());
         return dto;
     }
@@ -94,6 +121,7 @@ public class UserService {
         UserUpdateDto dto = new UserUpdateDto();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
+        dto.setRoleId(user.getRole().getId());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
