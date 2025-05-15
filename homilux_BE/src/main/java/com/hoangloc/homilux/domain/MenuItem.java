@@ -3,9 +3,11 @@ package com.hoangloc.homilux.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.util.MenuItemType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -20,12 +22,14 @@ public class MenuItem {
 
     private String name;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
     private MenuItemType type;
 
-    private Double price;
+    @PositiveOrZero
+    private BigDecimal price;
 
     @ManyToMany(mappedBy = "menuItems", fetch = FetchType.LAZY)
     @JsonIgnore
