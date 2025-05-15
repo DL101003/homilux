@@ -7,10 +7,12 @@ import java.time.Instant;
 
 @Getter
 @Setter
-public class UserDto {
+public class ReviewDto {
     private Long id;
-    private String email;
-    private String username;
+    private Long userId;
+    private Long bookingId;
+    private Integer rating;
+    private String comment;
     private Instant createdAt;
     private Instant updatedAt;
 }

@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.Set;
 
-
 @Entity
 @Table(name = "roles")
 @Getter
@@ -19,7 +18,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY)

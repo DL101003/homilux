@@ -18,11 +18,13 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
     private String name;
-
+    @NotBlank(message = "Api path cannot be blank")
     private String apiPath;
+    @NotBlank(message = "Method cannot be blank")
     private String method;
+    @NotBlank(message = "Module cannot be blank")
     private String module;
 
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)

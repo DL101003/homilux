@@ -7,10 +7,8 @@ import java.time.Instant;
 
 @Getter
 @Setter
-public class UserDto {
+public class UserUpdateDto {
     private Long id;
-    private String email;
     private String username;
-    private Instant createdAt;
     private Instant updatedAt;
 }

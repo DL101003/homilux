@@ -2,6 +2,8 @@ package com.hoangloc.homilux.service;
 
 
 import com.hoangloc.homilux.domain.User;
+import com.hoangloc.homilux.domain.dto.UserCreateDto;
+import com.hoangloc.homilux.domain.dto.UserUpdateDto;
 import com.hoangloc.homilux.domain.dto.UserDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
@@ -23,7 +25,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDto createUser(User user) {
+    public UserCreateDto createUser(User user) {
         if (userRepository.existsByUsernameAndDeletedFalse(user.getUsername())) {
             throw new ResourceAlreadyExistsException("Người dùng", "tên người dùng", user.getUsername());
         }
@@ -33,7 +35,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setDeleted(false);
         User savedUser = userRepository.save(user);
-        return toDto(savedUser);
+        return toCreateDto(savedUser);
     }
 
     public UserDto getUserById(Long id) {
@@ -49,7 +51,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto updateUser(User updatedUser) {
+    public UserUpdateDto updateUser(User updatedUser) {
         User user = userRepository.findByIdAndDeletedFalse(updatedUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedUser.getId()));
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(user.getUsername())) {
@@ -58,17 +60,8 @@ public class UserService {
             }
             user.setUsername(updatedUser.getUsername());
         }
-        if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(user.getEmail())) {
-            if (userRepository.existsByEmailAndDeletedFalse(updatedUser.getEmail())) {
-                throw new ResourceAlreadyExistsException("Người dùng", "email", updatedUser.getEmail());
-            }
-            user.setEmail(updatedUser.getEmail());
-        }
-        if (updatedUser.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-        }
         User savedUser = userRepository.save(user);
-        return toDto(savedUser);
+        return toUpdateDto(savedUser);
     }
 
     public void deleteUser(Long id) {
@@ -84,6 +77,23 @@ public class UserService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
+        return dto;
+    }
+
+    private UserCreateDto toCreateDto(User user) {
+        UserCreateDto dto = new UserCreateDto();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
+    }
+
+    private UserUpdateDto toUpdateDto(User user) {
+        UserUpdateDto dto = new UserUpdateDto();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }

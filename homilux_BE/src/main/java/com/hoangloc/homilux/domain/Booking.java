@@ -8,9 +8,11 @@ import com.hoangloc.homilux.util.EventType;
 import com.hoangloc.homilux.util.LocationType;
 import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -50,6 +52,12 @@ public class Booking {
     private List<MenuItem> menuItems;
 
     private Instant eventDate;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String description;
+
+    @PositiveOrZero
+    private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
