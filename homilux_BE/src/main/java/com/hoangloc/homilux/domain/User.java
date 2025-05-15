@@ -17,13 +17,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Email cannot be blank")
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
