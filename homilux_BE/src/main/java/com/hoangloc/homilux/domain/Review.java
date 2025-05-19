@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.Instant;
 
@@ -13,6 +14,7 @@ import java.time.Instant;
 @Table(name = "reviews")
 @Getter
 @Setter
+@SoftDelete
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +32,8 @@ public class Review {
     @Max(5)
     private Integer rating;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String comment;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

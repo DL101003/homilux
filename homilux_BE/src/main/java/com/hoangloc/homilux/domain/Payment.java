@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -15,6 +16,7 @@ import java.time.Instant;
 @Table(name = "payments")
 @Getter
 @Setter
+@SoftDelete
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +36,6 @@ public class Payment {
     private PaymentStatus paymentStatus; // CHUA_THANH_TOAN, DA_THANH_TOAN, THAT_BAI
 
     private Instant paymentDate;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

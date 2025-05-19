@@ -10,15 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    Optional<Booking> findByIdAndDeletedFalse(Long id);
 
-    List<Booking> findAllByDeletedFalse();
+    List<Booking> findByUserId(Long userId);
 
-    List<Booking> findByUserIdAndDeletedFalse(Long userId);
+    List<Booking> findByEventDate(Instant eventDate);
 
-    List<Booking> findByEventDateAndDeletedFalse(Instant eventDate);
+    boolean existsByEventDateAndLocationType(Instant eventDate, String locationType);
 
-    boolean existsByEventDateAndLocationTypeAndDeletedFalse(Instant eventDate, String locationType);
-
-    boolean existsByEventDateAndCustomLocationAddressAndDeletedFalse(Instant eventDate, String customLocationAddress);
+    boolean existsByEventDateAndCustomLocationAddress(Instant eventDate, String customLocationAddress);
 }

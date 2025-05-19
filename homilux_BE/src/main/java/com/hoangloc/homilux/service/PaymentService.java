@@ -26,25 +26,24 @@ public class PaymentService {
     }
 
     public PaymentCreateDto createPayment(Payment payment) {
-        Booking booking = bookingRepository.findByIdAndDeletedFalse(payment.getBooking().getId())
+        Booking booking = bookingRepository.findById(payment.getBooking().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", payment.getBooking().getId()));
-        if (paymentRepository.findByBookingIdAndDeletedFalse(booking.getId()).isPresent()) {
+        if (paymentRepository.findByBookingId(booking.getId()).isPresent()) {
             throw new ResourceAlreadyExistsException("Thanh toán", "đặt lịch ID", booking.getId());
         }
         payment.setBooking(booking);
-        payment.setDeleted(false);
         Payment savedPayment = paymentRepository.save(payment);
         return toCreateDto(savedPayment);
     }
 
     public PaymentDto getPaymentById(Long id) {
-        Payment payment = paymentRepository.findByIdAndDeletedFalse(id)
+        Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", id));
         return toDto(payment);
     }
 
     public List<PaymentDto> getAllPayments() {
-        return paymentRepository.findAllByDeletedFalse()
+        return paymentRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -54,13 +53,13 @@ public class PaymentService {
         if (updatedPayment.getId() == null) {
             throw new IllegalArgumentException("ID thanh toán không được để trống!");
         }
-        Payment payment = paymentRepository.findByIdAndDeletedFalse(updatedPayment.getId())
+        Payment payment = paymentRepository.findById(updatedPayment.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", updatedPayment.getId()));
         if (updatedPayment.getBooking() != null && updatedPayment.getBooking().getId() != null) {
-            Booking booking = bookingRepository.findByIdAndDeletedFalse(updatedPayment.getBooking().getId())
+            Booking booking = bookingRepository.findById(updatedPayment.getBooking().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedPayment.getBooking().getId()));
             if (!booking.getId().equals(payment.getBooking().getId()) &&
-                    paymentRepository.findByBookingIdAndDeletedFalse(booking.getId()).isPresent()) {
+                    paymentRepository.findByBookingId(booking.getId()).isPresent()) {
                 throw new ResourceAlreadyExistsException("Thanh toán", "đặt lịch ID", booking.getId());
             }
             payment.setBooking(booking);
@@ -82,9 +81,8 @@ public class PaymentService {
     }
 
     public void deletePayment(Long id) {
-        Payment payment = paymentRepository.findByIdAndDeletedFalse(id)
+        Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", id));
-        payment.setDeleted(true);
         paymentRepository.save(payment);
     }
 

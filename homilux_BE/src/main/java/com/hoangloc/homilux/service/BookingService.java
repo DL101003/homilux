@@ -39,10 +39,10 @@ public class BookingService {
     public BookingCreateDto createBooking(Booking booking) {
         User user = userRepository.findById(booking.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", booking.getUser().getId()));
-        ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(booking.getServicePackage().getId())
+        ServicePackage servicePackage = servicePackageRepository.findById(booking.getServicePackage().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", booking.getServicePackage().getId()));
         List<MenuItem> menuItems = booking.getMenuItems().stream()
-                .map(item -> menuItemRepository.findByIdAndDeletedFalse(item.getId())
+                .map(item -> menuItemRepository.findById(item.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", item.getId())))
                 .collect(Collectors.toList());
         booking.setUser(user);
@@ -50,19 +50,18 @@ public class BookingService {
         booking.setMenuItems(menuItems);
         booking.setStatus(BookingStatus.CHO_XAC_NHAN);
         booking.setPaymentStatus(PaymentStatus.CHUA_THANH_TOAN);
-        booking.setDeleted(false);
         Booking savedBooking = bookingRepository.save(booking);
         return toCreateDto(savedBooking);
     }
 
     public BookingDto getBookingById(Long id) {
-        Booking booking = bookingRepository.findByIdAndDeletedFalse(id)
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", id));
         return toDto(booking);
     }
 
     public List<BookingDto> getAllBookings() {
-        return bookingRepository.findAllByDeletedFalse()
+        return bookingRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -72,7 +71,7 @@ public class BookingService {
         if (updatedBooking.getId() == null) {
             throw new IllegalArgumentException("ID đặt lịch không được để trống!");
         }
-        Booking booking = bookingRepository.findByIdAndDeletedFalse(updatedBooking.getId())
+        Booking booking = bookingRepository.findById(updatedBooking.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedBooking.getId()));
         if (updatedBooking.getUser() != null && updatedBooking.getUser().getId() != null) {
             User user = userRepository.findById(updatedBooking.getUser().getId())
@@ -85,8 +84,8 @@ public class BookingService {
         if (updatedBooking.getLocationType() != null || updatedBooking.getCustomLocationAddress() != null) {
             String locationType = updatedBooking.getLocationType() != null ? updatedBooking.getLocationType().name() : booking.getLocationType().name();
             String address = updatedBooking.getCustomLocationAddress() != null ? updatedBooking.getCustomLocationAddress() : booking.getCustomLocationAddress();
-            if (bookingRepository.existsByEventDateAndLocationTypeAndDeletedFalse(booking.getEventDate(), locationType) ||
-                    bookingRepository.existsByEventDateAndCustomLocationAddressAndDeletedFalse(booking.getEventDate(), address)) {
+            if (bookingRepository.existsByEventDateAndLocationType(booking.getEventDate(), locationType) ||
+                    bookingRepository.existsByEventDateAndCustomLocationAddress(booking.getEventDate(), address)) {
                 throw new ResourceAlreadyExistsException("Đặt lịch", "ngày và địa điểm",
                         booking.getEventDate() + ", " + address);
             }
@@ -98,9 +97,9 @@ public class BookingService {
             }
         }
         if (updatedBooking.getEventDate() != null) {
-            if (bookingRepository.existsByEventDateAndLocationTypeAndDeletedFalse(
+            if (bookingRepository.existsByEventDateAndLocationType(
                     updatedBooking.getEventDate(), booking.getLocationType().name()) ||
-                    bookingRepository.existsByEventDateAndCustomLocationAddressAndDeletedFalse(
+                    bookingRepository.existsByEventDateAndCustomLocationAddress(
                             updatedBooking.getEventDate(), booking.getCustomLocationAddress())) {
                 throw new ResourceAlreadyExistsException("Đặt lịch", "ngày và địa điểm",
                         updatedBooking.getEventDate() + ", " + booking.getCustomLocationAddress());
@@ -108,13 +107,13 @@ public class BookingService {
             booking.setEventDate(updatedBooking.getEventDate());
         }
         if (updatedBooking.getServicePackage() != null && updatedBooking.getServicePackage().getId() != null) {
-            ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(updatedBooking.getServicePackage().getId())
+            ServicePackage servicePackage = servicePackageRepository.findById(updatedBooking.getServicePackage().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", updatedBooking.getServicePackage().getId()));
             booking.setServicePackage(servicePackage);
         }
         if (updatedBooking.getMenuItems() != null) {
             List<MenuItem> menuItems = updatedBooking.getMenuItems().stream()
-                    .map(item -> menuItemRepository.findByIdAndDeletedFalse(item.getId())
+                    .map(item -> menuItemRepository.findById(item.getId())
                             .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", item.getId())))
                     .collect(Collectors.toList());
             booking.setMenuItems(menuItems);
@@ -136,9 +135,8 @@ public class BookingService {
     }
 
     public void deleteBooking(Long id) {
-        Booking booking = bookingRepository.findByIdAndDeletedFalse(id)
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", id));
-        booking.setDeleted(true);
         bookingRepository.save(booking);
     }
 

@@ -9,9 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    Optional<Payment> findByIdAndDeletedFalse(Long id);
 
-    List<Payment> findAllByDeletedFalse();
-
-    Optional<Payment> findByBookingIdAndDeletedFalse(Long bookingId);
+    Optional<Payment> findByBookingId(Long bookingId);
 }

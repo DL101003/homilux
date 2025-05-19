@@ -26,27 +26,26 @@ public class ServicePackageService {
     }
 
     public ServicePackageCreateDto createServicePackage(ServicePackage servicePackage) {
-        if (servicePackageRepository.existsByNameAndDeletedFalse(servicePackage.getName())) {
+        if (servicePackageRepository.existsByName(servicePackage.getName())) {
             throw new ResourceAlreadyExistsException("Gói dịch vụ", "tên", servicePackage.getName());
         }
         List<ServiceItem> serviceItems = servicePackage.getServiceItems().stream()
-                .map(item -> serviceItemRepository.findByIdAndDeletedFalse(item.getId())
+                .map(item -> serviceItemRepository.findById(item.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", item.getId())))
                 .collect(Collectors.toList());
         servicePackage.setServiceItems(serviceItems);
-        servicePackage.setDeleted(false);
         ServicePackage savedServicePackage = servicePackageRepository.save(servicePackage);
         return toCreateDto(savedServicePackage);
     }
 
     public ServicePackageDto getServicePackageById(Long id) {
-        ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(id)
+        ServicePackage servicePackage = servicePackageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", id));
         return toDto(servicePackage);
     }
 
     public List<ServicePackageDto> getAllServicePackages() {
-        return servicePackageRepository.findAllByDeletedFalse()
+        return servicePackageRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -56,10 +55,10 @@ public class ServicePackageService {
         if (updatedServicePackage.getId() == null) {
             throw new IllegalArgumentException("ID gói dịch vụ không được để trống!");
         }
-        ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(updatedServicePackage.getId())
+        ServicePackage servicePackage = servicePackageRepository.findById(updatedServicePackage.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", updatedServicePackage.getId()));
         if (updatedServicePackage.getName() != null && !updatedServicePackage.getName().equals(servicePackage.getName()) &&
-                servicePackageRepository.existsByNameAndDeletedFalse(updatedServicePackage.getName())) {
+                servicePackageRepository.existsByName(updatedServicePackage.getName())) {
             throw new ResourceAlreadyExistsException("Gói dịch vụ", "tên", updatedServicePackage.getName());
         }
         if (updatedServicePackage.getName() != null) {
@@ -73,7 +72,7 @@ public class ServicePackageService {
         }
         if (updatedServicePackage.getServiceItems() != null) {
             List<ServiceItem> serviceItems = updatedServicePackage.getServiceItems().stream()
-                    .map(item -> serviceItemRepository.findByIdAndDeletedFalse(item.getId())
+                    .map(item -> serviceItemRepository.findById(item.getId())
                             .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", item.getId())))
                     .collect(Collectors.toList());
             servicePackage.setServiceItems(serviceItems);
@@ -87,9 +86,8 @@ public class ServicePackageService {
     }
 
     public void deleteServicePackage(Long id) {
-        ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(id)
+        ServicePackage servicePackage = servicePackageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", id));
-        servicePackage.setDeleted(true);
         servicePackageRepository.save(servicePackage);
     }
 

@@ -22,22 +22,21 @@ public class PermissionService {
     }
 
     public PermissionCreateDto createPermission(Permission permission) {
-        if (permissionRepository.existsByNameAndDeletedFalse(permission.getName())) {
+        if (permissionRepository.existsByName(permission.getName())) {
             throw new ResourceAlreadyExistsException("Quyền", "tên", permission.getName());
         }
-        permission.setDeleted(false);
         Permission savedPermission = permissionRepository.save(permission);
         return toCreateDto(savedPermission);
     }
 
     public PermissionDto getPermissionById(Long id) {
-        Permission permission = permissionRepository.findByIdAndDeletedFalse(id)
+        Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
         return toDto(permission);
     }
 
     public List<PermissionDto> getAllPermissions() {
-        return permissionRepository.findAllByDeletedFalse()
+        return permissionRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -47,10 +46,10 @@ public class PermissionService {
         if (updatedPermission.getId() == null) {
             throw new IllegalArgumentException("ID quyền không được để trống!");
         }
-        Permission permission = permissionRepository.findByIdAndDeletedFalse(updatedPermission.getId())
+        Permission permission = permissionRepository.findById(updatedPermission.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", updatedPermission.getId()));
         if (updatedPermission.getName() != null && !updatedPermission.getName().equals(permission.getName()) &&
-                permissionRepository.existsByNameAndDeletedFalse(updatedPermission.getName())) {
+                permissionRepository.existsByName(updatedPermission.getName())) {
             throw new ResourceAlreadyExistsException("Quyền", "tên", updatedPermission.getName());
         }
         if (updatedPermission.getName() != null) {
@@ -70,9 +69,8 @@ public class PermissionService {
     }
 
     public void deletePermission(Long id) {
-        Permission permission = permissionRepository.findByIdAndDeletedFalse(id)
+        Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
-        permission.setDeleted(true);
         permissionRepository.save(permission);
     }
 

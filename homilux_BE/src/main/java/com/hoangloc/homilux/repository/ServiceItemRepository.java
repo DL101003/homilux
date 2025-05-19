@@ -9,9 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ServiceItemRepository extends JpaRepository<ServiceItem, Long> {
-    Optional<ServiceItem> findByIdAndDeletedFalse(Long id);
-
-    List<ServiceItem> findAllByDeletedFalse();
-
-    boolean existsByNameAndDeletedFalse(String name);
+    boolean existsByName(String name);
 }

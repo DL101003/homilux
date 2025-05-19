@@ -22,22 +22,21 @@ public class ServiceItemService {
     }
 
     public ServiceItemCreateDto createServiceItem(ServiceItem serviceItem) {
-        if (serviceItemRepository.existsByNameAndDeletedFalse(serviceItem.getName())) {
+        if (serviceItemRepository.existsByName(serviceItem.getName())) {
             throw new ResourceAlreadyExistsException("Mục dịch vụ", "tên", serviceItem.getName());
         }
-        serviceItem.setDeleted(false);
         ServiceItem savedServiceItem = serviceItemRepository.save(serviceItem);
         return toCreateDto(savedServiceItem);
     }
 
     public ServiceItemDto getServiceItemById(Long id) {
-        ServiceItem serviceItem = serviceItemRepository.findByIdAndDeletedFalse(id)
+        ServiceItem serviceItem = serviceItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", id));
         return toDto(serviceItem);
     }
 
     public List<ServiceItemDto> getAllServiceItems() {
-        return serviceItemRepository.findAllByDeletedFalse()
+        return serviceItemRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -47,10 +46,10 @@ public class ServiceItemService {
         if (updatedServiceItem.getId() == null) {
             throw new IllegalArgumentException("ID mục dịch vụ không được để trống!");
         }
-        ServiceItem serviceItem = serviceItemRepository.findByIdAndDeletedFalse(updatedServiceItem.getId())
+        ServiceItem serviceItem = serviceItemRepository.findById(updatedServiceItem.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", updatedServiceItem.getId()));
         if (updatedServiceItem.getName() != null && !updatedServiceItem.getName().equals(serviceItem.getName()) &&
-                serviceItemRepository.existsByNameAndDeletedFalse(updatedServiceItem.getName())) {
+                serviceItemRepository.existsByName(updatedServiceItem.getName())) {
             throw new ResourceAlreadyExistsException("Mục dịch vụ", "tên", updatedServiceItem.getName());
         }
         if (updatedServiceItem.getName() != null) {
@@ -71,9 +70,8 @@ public class ServiceItemService {
     }
 
     public void deleteServiceItem(Long id) {
-        ServiceItem serviceItem = serviceItemRepository.findByIdAndDeletedFalse(id)
+        ServiceItem serviceItem = serviceItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", id));
-        serviceItem.setDeleted(true);
         serviceItemRepository.save(serviceItem);
     }
 

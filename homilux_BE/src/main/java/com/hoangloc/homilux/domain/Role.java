@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Table(name = "roles")
 @Getter
 @Setter
+@SoftDelete
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +38,6 @@ public class Role {
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
     List<User> users;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

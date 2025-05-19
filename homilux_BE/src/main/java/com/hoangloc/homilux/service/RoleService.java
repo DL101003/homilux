@@ -27,27 +27,26 @@ public class RoleService {
     }
 
     public RoleCreateDto createRole(Role role) {
-        if (roleRepository.existsByNameAndDeletedFalse(role.getName())) {
+        if (roleRepository.existsByName(role.getName())) {
             throw new ResourceAlreadyExistsException("Vai trò", "tên", role.getName());
         }
         Set<Permission> permissions = role.getPermissions().stream()
-                .map(permission -> permissionRepository.findByIdAndDeletedFalse(permission.getId())
+                .map(permission -> permissionRepository.findById(permission.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", permission.getId())))
                 .collect(Collectors.toSet());
         role.setPermissions(permissions);
-        role.setDeleted(false);
         Role savedRole = roleRepository.save(role);
         return toCreateDto(savedRole);
     }
 
     public RoleDto getRoleById(Long id) {
-        Role role = roleRepository.findByIdAndDeletedFalse(id)
+        Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", id));
         return toDto(role);
     }
 
     public List<RoleDto> getAllRoles() {
-        return roleRepository.findAllByDeletedFalse()
+        return roleRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -57,10 +56,10 @@ public class RoleService {
         if (updatedRole.getId() == null) {
             throw new IllegalArgumentException("ID vai trò không được để trống!");
         }
-        Role role = roleRepository.findByIdAndDeletedFalse(updatedRole.getId())
+        Role role = roleRepository.findById(updatedRole.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", updatedRole.getId()));
         if (updatedRole.getName() != null && !updatedRole.getName().equals(role.getName()) &&
-                roleRepository.existsByNameAndDeletedFalse(updatedRole.getName())) {
+                roleRepository.existsByName(updatedRole.getName())) {
             throw new ResourceAlreadyExistsException("Vai trò", "tên", updatedRole.getName());
         }
         if (updatedRole.getName() != null) {
@@ -68,7 +67,7 @@ public class RoleService {
         }
         if (updatedRole.getPermissions() != null) {
             Set<Permission> permissions = updatedRole.getPermissions().stream()
-                    .map(permission -> permissionRepository.findByIdAndDeletedFalse(permission.getId())
+                    .map(permission -> permissionRepository.findById(permission.getId())
                             .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", permission.getId())))
                     .collect(Collectors.toSet());
             role.setPermissions(permissions);
@@ -78,9 +77,8 @@ public class RoleService {
     }
 
     public void deleteRole(Long id) {
-        Role role = roleRepository.findByIdAndDeletedFalse(id)
+        Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", id));
-        role.setDeleted(true);
         roleRepository.save(role);
     }
 

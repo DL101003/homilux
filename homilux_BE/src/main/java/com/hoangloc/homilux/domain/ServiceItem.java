@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -17,6 +18,7 @@ import java.util.List;
 @Table(name = "service_items")
 @Getter
 @Setter
+@SoftDelete
 public class ServiceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +41,6 @@ public class ServiceItem {
     private List<ServicePackage> servicePackages;
 
     private boolean active = true;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

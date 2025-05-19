@@ -9,9 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
-    Optional<Permission> findByIdAndDeletedFalse(Long id);
-
-    List<Permission> findAllByDeletedFalse();
-
-    boolean existsByNameAndDeletedFalse(String name);
+    boolean existsByName(String name);
 }

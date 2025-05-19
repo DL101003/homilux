@@ -10,11 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
-    Optional<MenuItem> findByIdAndDeletedFalse(Long id);
 
-    List<MenuItem> findAllByDeletedFalse();
+    List<MenuItem> findByType(MenuItemType type);
 
-    List<MenuItem> findByTypeAndDeletedFalse(MenuItemType type);
-
-    boolean existsByNameAndDeletedFalse(String name);
+    boolean existsByName(String name);
 }

@@ -10,11 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface ServicePackageRepository extends JpaRepository<ServicePackage, Long> {
-    Optional<ServicePackage> findByIdAndDeletedFalse(Long id);
 
-    List<ServicePackage> findAllByDeletedFalse();
+    List<ServicePackage> findByEventType(EventType eventType);
 
-    List<ServicePackage> findByEventTypeAndDeletedFalse(EventType eventType);
-
-    boolean existsByNameAndDeletedFalse(String name);
+    boolean existsByName(String name);
 }

@@ -22,22 +22,21 @@ public class MenuItemService {
     }
 
     public MenuItemCreateDto createMenuItem(MenuItem menuItem) {
-        if (menuItemRepository.existsByNameAndDeletedFalse(menuItem.getName())) {
+        if (menuItemRepository.existsByName(menuItem.getName())) {
             throw new ResourceAlreadyExistsException("Món ăn", "tên", menuItem.getName());
         }
-        menuItem.setDeleted(false);
         MenuItem savedMenuItem = menuItemRepository.save(menuItem);
         return toCreateDto(savedMenuItem);
     }
 
     public MenuItemDto getMenuItemById(Long id) {
-        MenuItem menuItem = menuItemRepository.findByIdAndDeletedFalse(id)
+        MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", id));
         return toDto(menuItem);
     }
 
     public List<MenuItemDto> getAllMenuItems() {
-        return menuItemRepository.findAllByDeletedFalse()
+        return menuItemRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -47,10 +46,10 @@ public class MenuItemService {
         if (updatedMenuItem.getId() == null) {
             throw new IllegalArgumentException("ID món ăn không được để trống!");
         }
-        MenuItem menuItem = menuItemRepository.findByIdAndDeletedFalse(updatedMenuItem.getId())
+        MenuItem menuItem = menuItemRepository.findById(updatedMenuItem.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", updatedMenuItem.getId()));
         if (updatedMenuItem.getName() != null && !updatedMenuItem.getName().equals(menuItem.getName()) &&
-                menuItemRepository.existsByNameAndDeletedFalse(updatedMenuItem.getName())) {
+                menuItemRepository.existsByName(updatedMenuItem.getName())) {
             throw new ResourceAlreadyExistsException("Món ăn", "tên", updatedMenuItem.getName());
         }
         if (updatedMenuItem.getName() != null) {
@@ -71,9 +70,8 @@ public class MenuItemService {
     }
 
     public void deleteMenuItem(Long id) {
-        MenuItem menuItem = menuItemRepository.findByIdAndDeletedFalse(id)
+        MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", id));
-        menuItem.setDeleted(true);
         menuItemRepository.save(menuItem);
     }
 

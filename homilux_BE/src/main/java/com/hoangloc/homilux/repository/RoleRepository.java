@@ -9,9 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> findByIdAndDeletedFalse(Long id);
-
-    List<Role> findAllByDeletedFalse();
-
-    boolean existsByNameAndDeletedFalse(String name);
+    boolean existsByName(String name);
 }

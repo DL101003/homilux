@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,6 +17,7 @@ import java.util.List;
 @Table(name = "menu_items")
 @Getter
 @Setter
+@SoftDelete
 public class MenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +39,6 @@ public class MenuItem {
     private List<Booking> bookings;
 
     private boolean active = true;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

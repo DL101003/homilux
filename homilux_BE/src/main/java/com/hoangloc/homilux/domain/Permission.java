@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.Instant;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Table(name = "permissions")
 @Getter
 @Setter
+@SoftDelete
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +33,6 @@ public class Permission {
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Role> roles;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;
