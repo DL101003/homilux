@@ -3,10 +3,7 @@ package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hoangloc.homilux.util.BookingStatus;
-import com.hoangloc.homilux.util.EventType;
-import com.hoangloc.homilux.util.LocationType;
-import com.hoangloc.homilux.util.PaymentStatus;
+import com.hoangloc.homilux.util.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -77,8 +74,14 @@ public class Booking {
     private String updatedBy;
 
     @PrePersist
-    public void prePersist() {}
+    public void prePersist() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.createdAt = Instant.now();
+    }
 
     @PreUpdate
-    public void preUpdate() {}
+    public void preUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.updatedAt = Instant.now();
+    }
 }

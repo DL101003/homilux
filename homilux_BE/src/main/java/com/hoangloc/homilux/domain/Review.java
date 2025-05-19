@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.domain;
 
+import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -39,8 +40,14 @@ public class Review {
     private String updatedBy;
 
     @PrePersist
-    public void prePersist() {}
+    public void prePersist() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.createdAt = Instant.now();
+    }
 
     @PreUpdate
-    public void preUpdate() {}
+    public void preUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.updatedAt = Instant.now();
+    }
 }

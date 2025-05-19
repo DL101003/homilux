@@ -2,7 +2,9 @@ package com.hoangloc.homilux.domain;
 
 import com.hoangloc.homilux.util.PaymentMethod;
 import com.hoangloc.homilux.util.PaymentStatus;
+import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,7 @@ public class Payment {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @PositiveOrZero
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
@@ -40,8 +43,14 @@ public class Payment {
     private String updatedBy;
 
     @PrePersist
-    public void prePersist() {}
+    public void prePersist() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.createdAt = Instant.now();
+    }
 
     @PreUpdate
-    public void preUpdate() {}
+    public void preUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.updatedAt = Instant.now();
+    }
 }

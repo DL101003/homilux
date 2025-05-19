@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.domain;
 
+import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,7 @@ public class User {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
@@ -41,8 +42,14 @@ public class User {
     private String updatedBy;
 
     @PrePersist
-    public void prePersist() {}
+    public void prePersist() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.createdAt = Instant.now();
+    }
 
     @PreUpdate
-    public void preUpdate() {}
+    public void preUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        this.updatedAt = Instant.now();
+    }
 }
