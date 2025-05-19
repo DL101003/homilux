@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.controller;
 
+import com.hoangloc.homilux.annotation.ApiMessage;
 import com.hoangloc.homilux.domain.ServiceItem;
 import com.hoangloc.homilux.domain.dto.ServiceItemCreateDto;
 import com.hoangloc.homilux.domain.dto.ServiceItemDto;
@@ -23,30 +24,35 @@ public class ServiceItemController {
     }
 
     @PostMapping("/service-items")
+    @ApiMessage("Create a service item")
     public ResponseEntity<ServiceItemCreateDto> createServiceItem(@Valid @RequestBody ServiceItem serviceItem) {
         ServiceItemCreateDto createdServiceItem = serviceItemService.createServiceItem(serviceItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdServiceItem);
     }
 
     @GetMapping("/service-items")
+    @ApiMessage("Get all service items")
     public ResponseEntity<List<ServiceItemDto>> getAllServiceItems() {
         List<ServiceItemDto> serviceItems = serviceItemService.getAllServiceItems();
         return ResponseEntity.ok(serviceItems);
     }
 
     @GetMapping("/service-items/{id}")
+    @ApiMessage("Get a service item by id")
     public ResponseEntity<ServiceItemDto> getServiceItemById(@PathVariable Long id) {
         ServiceItemDto serviceItem = serviceItemService.getServiceItemById(id);
         return ResponseEntity.ok(serviceItem);
     }
 
     @PutMapping("/service-items")
+    @ApiMessage("Update a service item")
     public ResponseEntity<ServiceItemUpdateDto> updateServiceItem(@RequestBody ServiceItem serviceItem) {
         ServiceItemUpdateDto updatedServiceItem = serviceItemService.updateServiceItem(serviceItem);
         return ResponseEntity.ok(updatedServiceItem);
     }
 
     @DeleteMapping("/service-items/{id}")
+    @ApiMessage("Delete a service item by id")
     public ResponseEntity<Void> deleteServiceItem(@PathVariable Long id) {
         serviceItemService.deleteServiceItem(id);
         return ResponseEntity.noContent().build();

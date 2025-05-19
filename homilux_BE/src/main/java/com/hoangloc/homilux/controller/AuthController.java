@@ -45,6 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
+    @ApiMessage("Login")
     public ResponseEntity<ResLoginDto> login(@Valid @RequestBody ReqLoginDto reqLoginDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(reqLoginDTO.getUsername(), reqLoginDTO.getPassword());
@@ -79,7 +80,7 @@ public class AuthController {
     }
 
     @GetMapping("/auth/account")
-    @ApiMessage("Fetch account")
+    @ApiMessage("Get account")
     public ResponseEntity<ResLoginDto.UsetGetAccount> getAccount() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
 
