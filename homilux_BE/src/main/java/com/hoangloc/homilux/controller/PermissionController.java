@@ -41,7 +41,7 @@ public class PermissionController {
     }
 
     @PutMapping("/permissions")
-    public ResponseEntity<PermissionUpdateDto> updatePermission(@Valid @RequestBody Permission permission) {
+    public ResponseEntity<PermissionUpdateDto> updatePermission(@RequestBody Permission permission) {
         PermissionUpdateDto updatedPermission = permissionService.updatePermission(permission);
         return ResponseEntity.ok(updatedPermission);
     }

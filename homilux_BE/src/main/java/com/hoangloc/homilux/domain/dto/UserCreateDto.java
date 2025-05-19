@@ -11,6 +11,5 @@ public class UserCreateDto {
     private Long id;
     private String username;
     private String email;
-    private Long roleId;
     private Instant createdAt;
 }

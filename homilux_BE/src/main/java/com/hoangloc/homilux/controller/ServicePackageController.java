@@ -41,7 +41,7 @@ public class ServicePackageController {
     }
 
     @PutMapping("/service-packages")
-    public ResponseEntity<ServicePackageUpdateDto> updateServicePackage(@Valid @RequestBody ServicePackage servicePackage) {
+    public ResponseEntity<ServicePackageUpdateDto> updateServicePackage(@RequestBody ServicePackage servicePackage) {
         ServicePackageUpdateDto updatedServicePackage = servicePackageService.updateServicePackage(servicePackage);
         return ResponseEntity.ok(updatedServicePackage);
     }

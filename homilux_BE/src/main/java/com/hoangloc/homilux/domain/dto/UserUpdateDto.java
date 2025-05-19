@@ -10,6 +10,5 @@ import java.time.Instant;
 public class UserUpdateDto {
     private Long id;
     private String username;
-    private Long roleId;
     private Instant updatedAt;
 }

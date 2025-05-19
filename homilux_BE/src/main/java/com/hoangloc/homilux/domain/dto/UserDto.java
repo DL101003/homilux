@@ -11,7 +11,6 @@ public class UserDto {
     private Long id;
     private String email;
     private String username;
-    private Long roleId;
     private Instant createdAt;
     private Instant updatedAt;
 }

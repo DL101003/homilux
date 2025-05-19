@@ -41,7 +41,7 @@ public class MenuItemController {
     }
 
     @PutMapping("/menu-items")
-    public ResponseEntity<MenuItemUpdateDto> updateMenuItem(@Valid @RequestBody MenuItem menuItem) {
+    public ResponseEntity<MenuItemUpdateDto> updateMenuItem(@RequestBody MenuItem menuItem) {
         MenuItemUpdateDto updatedMenuItem = menuItemService.updateMenuItem(menuItem);
         return ResponseEntity.ok(updatedMenuItem);
     }

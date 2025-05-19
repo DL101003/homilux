@@ -26,7 +26,10 @@ public class User {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String refreshToken;
+
+    @ManyToOne()
     @JoinColumn(name = "role_id")
     private Role role;
 
