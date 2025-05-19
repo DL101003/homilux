@@ -27,7 +27,7 @@ public class MenuItem {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private MenuItemType type;
+    private MenuItemType type; // MON_AN, DO_UONG
 
     @PositiveOrZero
     private BigDecimal price;

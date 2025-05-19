@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.annotation.ApiMessage;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.UserCreateDto;
 import com.hoangloc.homilux.domain.dto.UserUpdateDto;
@@ -24,35 +23,30 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    @ApiMessage("Create a user")
     public ResponseEntity<UserCreateDto> createUser(@Valid @RequestBody User user) {
         UserCreateDto createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping("/users")
-    @ApiMessage("Get all users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{id}")
-    @ApiMessage("Get a user by id")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserDto user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/users")
-    @ApiMessage("Update a user")
     public ResponseEntity<UserUpdateDto> updateUser(@RequestBody User user) {
         UserUpdateDto updatedUser = userService.updateUser(user);
         return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/users/{id}")
-    @ApiMessage("Delete a user by id")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();

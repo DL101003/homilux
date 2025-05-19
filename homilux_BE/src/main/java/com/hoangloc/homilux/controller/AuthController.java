@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.annotation.ApiMessage;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.ReqLoginDto;
 import com.hoangloc.homilux.domain.dto.ResLoginDto;
@@ -45,7 +44,6 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    @ApiMessage("Login")
     public ResponseEntity<ResLoginDto> login(@Valid @RequestBody ReqLoginDto reqLoginDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(reqLoginDTO.getUsername(), reqLoginDTO.getPassword());
@@ -80,7 +78,6 @@ public class AuthController {
     }
 
     @GetMapping("/auth/account")
-    @ApiMessage("Get account")
     public ResponseEntity<ResLoginDto.UsetGetAccount> getAccount() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
 
@@ -99,7 +96,6 @@ public class AuthController {
     }
 
     @GetMapping("/auth/refresh")
-    @ApiMessage("Get user by refresh token")
     public ResponseEntity<ResLoginDto> getRefreshToken(@CookieValue("refresh_token") String refreshToken) throws Exception {
         Jwt decodedToken = securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodedToken.getSubject();
@@ -134,7 +130,6 @@ public class AuthController {
     }
 
     @PostMapping("/auth/logout")
-    @ApiMessage("Logout")
     public ResponseEntity<Void> logout() throws Exception {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
         if (email == null) {
@@ -155,7 +150,6 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    @ApiMessage("Register")
     public ResponseEntity<UserCreateDto> register(@Valid @RequestBody User postmanUser) throws ResourceAlreadyExistsException {
 
         if (userService.isEmailExist(postmanUser.getEmail())) {

@@ -29,7 +29,7 @@ public class ReviewService {
     }
 
     public ReviewCreateDto createReview(Review review) {
-        User user = userRepository.findByIdAndDeletedFalse(review.getUser().getId())
+        User user = userRepository.findById(review.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", review.getUser().getId()));
         Booking booking = bookingRepository.findByIdAndDeletedFalse(review.getBooking().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", review.getBooking().getId()));
@@ -60,7 +60,7 @@ public class ReviewService {
         Review review = reviewRepository.findByIdAndDeletedFalse(updatedReview.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá", "ID", updatedReview.getId()));
         if (updatedReview.getUser() != null && updatedReview.getUser().getId() != null) {
-            User user = userRepository.findByIdAndDeletedFalse(updatedReview.getUser().getId())
+            User user = userRepository.findById(updatedReview.getUser().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedReview.getUser().getId()));
             review.setUser(user);
         }

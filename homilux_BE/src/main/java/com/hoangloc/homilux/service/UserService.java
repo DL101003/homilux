@@ -10,12 +10,10 @@ import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.RoleRepository;
 import com.hoangloc.homilux.repository.UserRepository;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +30,11 @@ public class UserService {
     }
 
     public UserCreateDto createUser(User user) {
-        if (userRepository.existsByUsernameAndDeletedFalse(user.getUsername())) {
-            throw new ResourceAlreadyExistsException("Người dùng", "tên người dùng", user.getUsername());
-        }
-        if (userRepository.existsByEmailAndDeletedFalse(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new ResourceAlreadyExistsException("Người dùng", "email", user.getEmail());
         }
         if (user.getRole() != null) {
-            Role role = roleRepository.findByIdAndDeletedFalse(user.getRole().getId())
+            Role role = roleRepository.findById(user.getRole().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", user.getRole().getId()));
             user.setRole(role);
         }
@@ -49,13 +44,13 @@ public class UserService {
     }
 
     public UserDto getUserById(Long id) {
-        User user = userRepository.findByIdAndDeletedFalse(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", id));
         return toDto(user);
     }
 
     public List<UserDto> getAllUsers() {
-        return userRepository.findAllByDeletedFalse()
+        return userRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -65,27 +60,15 @@ public class UserService {
         if (updatedUser.getId() == null) {
             throw new IllegalArgumentException("ID người dùng không được để trống!");
         }
-        User user = userRepository.findByIdAndDeletedFalse(updatedUser.getId())
+        User user = userRepository.findById(updatedUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedUser.getId()));
-        if (updatedUser.getUsername() != null && !updatedUser.getUsername().equals(user.getUsername()) &&
-                userRepository.existsByUsernameAndDeletedFalse(updatedUser.getUsername())) {
-            throw new ResourceAlreadyExistsException("Người dùng", "tên đăng nhập", updatedUser.getUsername());
-        }
-        if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(user.getEmail()) &&
-                userRepository.existsByEmailAndDeletedFalse(updatedUser.getEmail())) {
-            throw new ResourceAlreadyExistsException("Người dùng", "email", updatedUser.getEmail());
-        }
+
         if (updatedUser.getUsername() != null) {
             user.setUsername(updatedUser.getUsername());
         }
-        if (updatedUser.getEmail() != null) {
-            user.setEmail(updatedUser.getEmail());
-        }
-        if (updatedUser.getPassword() != null) {
-            user.setPassword(updatedUser.getPassword());
-        }
-        if (updatedUser.getRole() != null && updatedUser.getRole().getId() != null) {
-            Role role = roleRepository.findByIdAndDeletedFalse(updatedUser.getRole().getId())
+
+        if (updatedUser.getRole() != null) {
+            Role role = roleRepository.findById(updatedUser.getRole().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", updatedUser.getRole().getId()));
             user.setRole(role);
         }
@@ -94,10 +77,9 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User user = userRepository.findByIdAndDeletedFalse(id)
+        userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", id));
-        user.setDeleted(true);
-        userRepository.save(user);
+        userRepository.deleteById(id);
     }
 
     private UserDto toDto(User user) {
@@ -144,6 +126,6 @@ public class UserService {
     }
 
     public boolean isEmailExist(String email) {
-        return userRepository.existsByEmailAndDeletedFalse(email);
+        return userRepository.existsByEmail(email);
     }
 }

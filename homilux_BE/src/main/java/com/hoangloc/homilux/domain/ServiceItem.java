@@ -29,7 +29,7 @@ public class ServiceItem {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private EventType eventType;
+    private EventType eventType; // TIEC_CUOI, DAM_HOI, TAN_GIA, DAY_THANG, SINH_NHAT, KHAC
 
     @PositiveOrZero
     private BigDecimal price;

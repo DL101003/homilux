@@ -3,9 +3,9 @@ package com.hoangloc.homilux.domain;
 import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.Instant;
 
@@ -13,6 +13,7 @@ import java.time.Instant;
 @Table(name = "users")
 @Getter
 @Setter
+@SoftDelete
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +34,6 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
-
-    private boolean deleted = false;
 
     private Instant createdAt;
     private Instant updatedAt;

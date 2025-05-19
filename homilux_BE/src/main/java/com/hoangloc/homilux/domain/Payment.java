@@ -28,10 +28,10 @@ public class Payment {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private PaymentMethod paymentMethod; // TRUC_TUYEN, SAU_SU_KIEN
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
+    private PaymentStatus paymentStatus; // CHUA_THANH_TOAN, DA_THANH_TOAN, THAT_BAI
 
     private Instant paymentDate;
 

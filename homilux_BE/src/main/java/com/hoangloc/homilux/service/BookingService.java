@@ -37,7 +37,7 @@ public class BookingService {
     }
 
     public BookingCreateDto createBooking(Booking booking) {
-        User user = userRepository.findByIdAndDeletedFalse(booking.getUser().getId())
+        User user = userRepository.findById(booking.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", booking.getUser().getId()));
         ServicePackage servicePackage = servicePackageRepository.findByIdAndDeletedFalse(booking.getServicePackage().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", booking.getServicePackage().getId()));
@@ -75,7 +75,7 @@ public class BookingService {
         Booking booking = bookingRepository.findByIdAndDeletedFalse(updatedBooking.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedBooking.getId()));
         if (updatedBooking.getUser() != null && updatedBooking.getUser().getId() != null) {
-            User user = userRepository.findByIdAndDeletedFalse(updatedBooking.getUser().getId())
+            User user = userRepository.findById(updatedBooking.getUser().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedBooking.getUser().getId()));
             booking.setUser(user);
         }
