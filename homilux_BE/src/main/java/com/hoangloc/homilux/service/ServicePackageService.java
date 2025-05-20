@@ -1,14 +1,10 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.ServiceItem;
-import com.hoangloc.homilux.domain.ServicePackage;
 import com.hoangloc.homilux.domain.dto.ServicePackageCreateDto;
 import com.hoangloc.homilux.domain.dto.ServicePackageDto;
 import com.hoangloc.homilux.domain.dto.ServicePackageUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.ServiceItemRepository;
-import com.hoangloc.homilux.repository.ServicePackageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -86,9 +82,9 @@ public class ServicePackageService {
     }
 
     public void deleteServicePackage(Long id) {
-        ServicePackage servicePackage = servicePackageRepository.findById(id)
+        servicePackageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Gói dịch vụ", "ID", id));
-        servicePackageRepository.save(servicePackage);
+        servicePackageRepository.deleteById(id);
     }
 
     private ServicePackageDto toDto(ServicePackage servicePackage) {

@@ -69,9 +69,9 @@ public class PermissionService {
     }
 
     public void deletePermission(Long id) {
-        Permission permission = permissionRepository.findById(id)
+        permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
-        permissionRepository.save(permission);
+        permissionRepository.deleteById(id);
     }
 
     private PermissionDto toDto(Permission permission) {

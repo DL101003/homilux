@@ -1,20 +1,12 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.Booking;
-import com.hoangloc.homilux.domain.MenuItem;
-import com.hoangloc.homilux.domain.ServicePackage;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.BookingCreateDto;
 import com.hoangloc.homilux.domain.dto.BookingDto;
 import com.hoangloc.homilux.domain.dto.BookingUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.BookingRepository;
-import com.hoangloc.homilux.repository.MenuItemRepository;
-import com.hoangloc.homilux.repository.ServicePackageRepository;
 import com.hoangloc.homilux.repository.UserRepository;
-import com.hoangloc.homilux.util.BookingStatus;
-import com.hoangloc.homilux.util.PaymentStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +41,6 @@ public class BookingService {
         booking.setServicePackage(servicePackage);
         booking.setMenuItems(menuItems);
         booking.setStatus(BookingStatus.CHO_XAC_NHAN);
-        booking.setPaymentStatus(PaymentStatus.CHUA_THANH_TOAN);
         Booking savedBooking = bookingRepository.save(booking);
         return toCreateDto(savedBooking);
     }
@@ -73,7 +64,7 @@ public class BookingService {
         }
         Booking booking = bookingRepository.findById(updatedBooking.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedBooking.getId()));
-        if (updatedBooking.getUser() != null && updatedBooking.getUser().getId() != null) {
+        if (updatedBooking.getUser() != null) {
             User user = userRepository.findById(updatedBooking.getUser().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedBooking.getUser().getId()));
             booking.setUser(user);
@@ -118,15 +109,6 @@ public class BookingService {
                     .collect(Collectors.toList());
             booking.setMenuItems(menuItems);
         }
-        if (updatedBooking.getDescription() != null) {
-            booking.setDescription(updatedBooking.getDescription());
-        }
-        if (updatedBooking.getTotalPrice() != null) {
-            booking.setTotalPrice(updatedBooking.getTotalPrice());
-        }
-        if (updatedBooking.getPaymentStatus() != null) {
-            booking.setPaymentStatus(updatedBooking.getPaymentStatus());
-        }
         if (updatedBooking.getStatus() != null) {
             booking.setStatus(updatedBooking.getStatus());
         }
@@ -135,9 +117,9 @@ public class BookingService {
     }
 
     public void deleteBooking(Long id) {
-        Booking booking = bookingRepository.findById(id)
+        bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", id));
-        bookingRepository.save(booking);
+        bookingRepository.deleteById(id);
     }
 
     private BookingDto toDto(Booking booking) {
@@ -150,9 +132,6 @@ public class BookingService {
         dto.setServicePackageId(booking.getServicePackage().getId());
         dto.setMenuItemIds(booking.getMenuItems().stream().map(MenuItem::getId).collect(Collectors.toList()));
         dto.setEventDate(booking.getEventDate());
-        dto.setDescription(booking.getDescription());
-        dto.setTotalPrice(booking.getTotalPrice());
-        dto.setPaymentStatus(booking.getPaymentStatus().name());
         dto.setStatus(booking.getStatus().name());
         dto.setCreatedAt(booking.getCreatedAt());
         dto.setUpdatedAt(booking.getUpdatedAt());
@@ -169,9 +148,6 @@ public class BookingService {
         dto.setServicePackageId(booking.getServicePackage().getId());
         dto.setMenuItemIds(booking.getMenuItems().stream().map(MenuItem::getId).collect(Collectors.toList()));
         dto.setEventDate(booking.getEventDate());
-        dto.setDescription(booking.getDescription());
-        dto.setTotalPrice(booking.getTotalPrice());
-        dto.setPaymentStatus(booking.getPaymentStatus().name());
         dto.setStatus(booking.getStatus().name());
         dto.setCreatedAt(booking.getCreatedAt());
         return dto;
@@ -187,9 +163,6 @@ public class BookingService {
         dto.setServicePackageId(booking.getServicePackage().getId());
         dto.setMenuItemIds(booking.getMenuItems().stream().map(MenuItem::getId).collect(Collectors.toList()));
         dto.setEventDate(booking.getEventDate());
-        dto.setDescription(booking.getDescription());
-        dto.setTotalPrice(booking.getTotalPrice());
-        dto.setPaymentStatus(booking.getPaymentStatus().name());
         dto.setStatus(booking.getStatus().name());
         dto.setUpdatedAt(booking.getUpdatedAt());
         return dto;

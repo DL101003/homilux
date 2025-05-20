@@ -1,22 +1,22 @@
 package com.hoangloc.homilux.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hoangloc.homilux.util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
-import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "permissions")
 @Getter
 @Setter
-@SoftDelete
-public class Permission {
+@SQLDelete(sql = "UPDATE permissions SET deleted = true WHERE id = ?")
+@SQLRestriction(value = "deleted = false")
+public class Permission extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,23 +31,7 @@ public class Permission {
     private String module;
 
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Role> roles;
+    @JsonBackReference
+    private List<Role> roles;
 
-    private Instant createdAt;
-    private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
-        this.createdAt = Instant.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
-        this.updatedAt = Instant.now();
-    }
 }

@@ -1,13 +1,10 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.Booking;
-import com.hoangloc.homilux.domain.Payment;
 import com.hoangloc.homilux.domain.dto.PaymentCreateDto;
 import com.hoangloc.homilux.domain.dto.PaymentDto;
 import com.hoangloc.homilux.domain.dto.PaymentUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.BookingRepository;
 import com.hoangloc.homilux.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +52,7 @@ public class PaymentService {
         }
         Payment payment = paymentRepository.findById(updatedPayment.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", updatedPayment.getId()));
-        if (updatedPayment.getBooking() != null && updatedPayment.getBooking().getId() != null) {
+        if (updatedPayment.getBooking() != null) {
             Booking booking = bookingRepository.findById(updatedPayment.getBooking().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedPayment.getBooking().getId()));
             if (!booking.getId().equals(payment.getBooking().getId()) &&
@@ -81,9 +78,9 @@ public class PaymentService {
     }
 
     public void deletePayment(Long id) {
-        Payment payment = paymentRepository.findById(id)
+        paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", id));
-        paymentRepository.save(payment);
+        paymentRepository.deleteById(id);
     }
 
     private PaymentDto toDto(Payment payment) {

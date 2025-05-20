@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.domain.ServicePackage;
 import com.hoangloc.homilux.domain.dto.ServicePackageCreateDto;
 import com.hoangloc.homilux.domain.dto.ServicePackageDto;
 import com.hoangloc.homilux.domain.dto.ServicePackageUpdateDto;

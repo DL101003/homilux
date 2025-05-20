@@ -1,12 +1,10 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.MenuItem;
 import com.hoangloc.homilux.domain.dto.MenuItemCreateDto;
 import com.hoangloc.homilux.domain.dto.MenuItemDto;
 import com.hoangloc.homilux.domain.dto.MenuItemUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,9 +53,7 @@ public class MenuItemService {
         if (updatedMenuItem.getName() != null) {
             menuItem.setName(updatedMenuItem.getName());
         }
-        if (updatedMenuItem.getDescription() != null) {
-            menuItem.setDescription(updatedMenuItem.getDescription());
-        }
+
         if (updatedMenuItem.getType() != null) {
             menuItem.setType(updatedMenuItem.getType());
         }
@@ -70,16 +66,15 @@ public class MenuItemService {
     }
 
     public void deleteMenuItem(Long id) {
-        MenuItem menuItem = menuItemRepository.findById(id)
+        menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", id));
-        menuItemRepository.save(menuItem);
+        menuItemRepository.deleteById(id);
     }
 
     private MenuItemDto toDto(MenuItem menuItem) {
         MenuItemDto dto = new MenuItemDto();
         dto.setId(menuItem.getId());
         dto.setName(menuItem.getName());
-        dto.setDescription(menuItem.getDescription());
         dto.setType(menuItem.getType().name());
         dto.setPrice(menuItem.getPrice());
         dto.setActive(menuItem.isActive());
@@ -92,7 +87,6 @@ public class MenuItemService {
         MenuItemCreateDto dto = new MenuItemCreateDto();
         dto.setId(menuItem.getId());
         dto.setName(menuItem.getName());
-        dto.setDescription(menuItem.getDescription());
         dto.setType(menuItem.getType().name());
         dto.setPrice(menuItem.getPrice());
         dto.setActive(menuItem.isActive());
@@ -104,7 +98,6 @@ public class MenuItemService {
         MenuItemUpdateDto dto = new MenuItemUpdateDto();
         dto.setId(menuItem.getId());
         dto.setName(menuItem.getName());
-        dto.setDescription(menuItem.getDescription());
         dto.setType(menuItem.getType().name());
         dto.setPrice(menuItem.getPrice());
         dto.setActive(menuItem.isActive());

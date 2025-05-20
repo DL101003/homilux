@@ -1,7 +1,5 @@
 package com.hoangloc.homilux.annotation;
 
-import com.hoangloc.homilux.domain.Booking;
-import com.hoangloc.homilux.util.LocationType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

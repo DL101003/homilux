@@ -1,54 +1,41 @@
 package com.hoangloc.homilux.domain;
 
-import com.hoangloc.homilux.util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SoftDelete;
-
-import java.time.Instant;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "reviews")
 @Getter
 @Setter
-@SoftDelete
-public class Review {
+@SQLDelete(sql = "UPDATE reviews SET deleted = true WHERE id = ?")
+@SQLRestriction(value = "deleted = false")
+public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
+    @JoinColumn(name = "event_id")
+    @JsonBackReference
+    private Event event;
 
-    @Min(1)
-    @Max(5)
-    private Integer rating;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dish_id")
+    @JsonBackReference
+    private Dish dish;
 
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "INT CHECK (rating >= 1 AND rating <= 5)")
+    private int rating;
+
     private String comment;
 
-    private Instant createdAt;
-    private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
-        this.createdAt = Instant.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
-        this.updatedAt = Instant.now();
-    }
 }

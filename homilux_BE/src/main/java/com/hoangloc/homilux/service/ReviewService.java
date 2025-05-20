@@ -1,13 +1,10 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.Booking;
-import com.hoangloc.homilux.domain.Review;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.ReviewCreateDto;
 import com.hoangloc.homilux.domain.dto.ReviewDto;
 import com.hoangloc.homilux.domain.dto.ReviewUpdateDto;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.BookingRepository;
 import com.hoangloc.homilux.repository.ReviewRepository;
 import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -58,12 +55,12 @@ public class ReviewService {
         }
         Review review = reviewRepository.findById(updatedReview.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá", "ID", updatedReview.getId()));
-        if (updatedReview.getUser() != null && updatedReview.getUser().getId() != null) {
+        if (updatedReview.getUser() != null) {
             User user = userRepository.findById(updatedReview.getUser().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", updatedReview.getUser().getId()));
             review.setUser(user);
         }
-        if (updatedReview.getBooking() != null && updatedReview.getBooking().getId() != null) {
+        if (updatedReview.getBooking() != null) {
             Booking booking = bookingRepository.findById(updatedReview.getBooking().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch", "ID", updatedReview.getBooking().getId()));
             review.setBooking(booking);
@@ -79,9 +76,9 @@ public class ReviewService {
     }
 
     public void deleteReview(Long id) {
-        Review review = reviewRepository.findById(id)
+        reviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá", "ID", id));
-        reviewRepository.save(review);
+        reviewRepository.deleteById(id);
     }
 
     private ReviewDto toDto(Review review) {

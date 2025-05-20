@@ -1,12 +1,10 @@
 package com.hoangloc.homilux.service;
 
-import com.hoangloc.homilux.domain.ServiceItem;
 import com.hoangloc.homilux.domain.dto.ServiceItemCreateDto;
 import com.hoangloc.homilux.domain.dto.ServiceItemDto;
 import com.hoangloc.homilux.domain.dto.ServiceItemUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
-import com.hoangloc.homilux.repository.ServiceItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,9 +68,9 @@ public class ServiceItemService {
     }
 
     public void deleteServiceItem(Long id) {
-        ServiceItem serviceItem = serviceItemRepository.findById(id)
+        serviceItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mục dịch vụ", "ID", id));
-        serviceItemRepository.save(serviceItem);
+        serviceItemRepository.deleteById(id);
     }
 
     private ServiceItemDto toDto(ServiceItem serviceItem) {

@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.domain.Booking;
 import com.hoangloc.homilux.domain.dto.BookingCreateDto;
 import com.hoangloc.homilux.domain.dto.BookingDto;
 import com.hoangloc.homilux.domain.dto.BookingUpdateDto;

@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.domain.Payment;
 import com.hoangloc.homilux.domain.dto.PaymentCreateDto;
 import com.hoangloc.homilux.domain.dto.PaymentDto;
 import com.hoangloc.homilux.domain.dto.PaymentUpdateDto;

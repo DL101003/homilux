@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.controller;
 
-import com.hoangloc.homilux.domain.MenuItem;
 import com.hoangloc.homilux.domain.dto.MenuItemCreateDto;
 import com.hoangloc.homilux.domain.dto.MenuItemDto;
 import com.hoangloc.homilux.domain.dto.MenuItemUpdateDto;

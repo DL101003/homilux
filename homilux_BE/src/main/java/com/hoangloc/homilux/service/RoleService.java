@@ -77,9 +77,9 @@ public class RoleService {
     }
 
     public void deleteRole(Long id) {
-        Role role = roleRepository.findById(id)
+        roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", id));
-        roleRepository.save(role);
+        roleRepository.deleteById(id);
     }
 
     private RoleDto toDto(Role role) {
