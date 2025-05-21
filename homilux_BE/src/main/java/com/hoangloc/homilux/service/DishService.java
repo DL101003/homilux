@@ -21,7 +21,7 @@ public class DishService {
 
     public DishDto createDish(Dish dish) {
         if (dishRepository.existsByName(dish.getName())) {
-            throw new ResourceAlreadyExistsException("Món ăn", "dishName", dish.getName());
+            throw new ResourceAlreadyExistsException("Món ăn", "tên", dish.getName());
         }
         Dish savedDish = dishRepository.save(dish);
         return toDto(savedDish);
@@ -36,7 +36,7 @@ public class DishService {
 
         if (!dish.getName().equals(updatedDish.getName()) &&
                 dishRepository.existsByName(updatedDish.getName())) {
-            throw new ResourceAlreadyExistsException("Món ăn", "dishName", updatedDish.getName());
+            throw new ResourceAlreadyExistsException("Món ăn", "tên", updatedDish.getName());
         }
 
         dish.setName(updatedDish.getName());

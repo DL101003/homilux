@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class Permission extends BaseEntity {
     private String module;
 
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonIgnore
     private List<Role> roles;
 
 }

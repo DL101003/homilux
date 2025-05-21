@@ -21,7 +21,7 @@ public class EventTypeService {
 
     public EventTypeDto createEventType(EventType eventType) {
         if (eventTypeRepository.existsByName(eventType.getName())) {
-            throw new ResourceAlreadyExistsException("Loại sự kiện", "typeName", eventType.getName());
+            throw new ResourceAlreadyExistsException("Loại sự kiện", "tên", eventType.getName());
         }
         EventType savedEventType = eventTypeRepository.save(eventType);
         return toDto(savedEventType);
@@ -36,7 +36,7 @@ public class EventTypeService {
 
         if (!eventType.getName().equals(updatedEventType.getName()) &&
                 eventTypeRepository.existsByName(updatedEventType.getName())) {
-            throw new ResourceAlreadyExistsException("Loại sự kiện", "typeName", updatedEventType.getName());
+            throw new ResourceAlreadyExistsException("Loại sự kiện", "tên", updatedEventType.getName());
         }
 
         eventType.setName(updatedEventType.getName());

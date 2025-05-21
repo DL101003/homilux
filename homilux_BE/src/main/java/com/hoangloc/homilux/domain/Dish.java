@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,7 +27,7 @@ public class Dish extends BaseEntity {
     private String category;
 
     @ManyToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonIgnore
     private List<Menu> menus;
 
     @OneToMany(mappedBy = "dish", fetch = FetchType.LAZY)

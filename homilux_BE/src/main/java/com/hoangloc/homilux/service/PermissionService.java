@@ -21,7 +21,7 @@ public class PermissionService {
 
     public PermissionDto createPermission(Permission permission) {
         if (permissionRepository.existsByName(permission.getName())) {
-            throw new ResourceAlreadyExistsException("Quyền", "name", permission.getName());
+            throw new ResourceAlreadyExistsException("Quyền", "tên", permission.getName());
         }
         if (permissionRepository.existsByApiPathAndMethod(permission.getApiPath(), permission.getMethod())) {
             throw new ResourceAlreadyExistsException("Quyền", "apiPath và method", permission.getApiPath() + ", " + permission.getMethod());
@@ -39,7 +39,7 @@ public class PermissionService {
 
         if (!permission.getName().equals(updatedPermission.getName()) &&
                 permissionRepository.existsByName(updatedPermission.getName())) {
-            throw new ResourceAlreadyExistsException("Quyền", "name", updatedPermission.getName());
+            throw new ResourceAlreadyExistsException("Quyền", "tên", updatedPermission.getName());
         }
         if (!permission.getApiPath().equals(updatedPermission.getApiPath()) ||
                 !permission.getMethod().equals(updatedPermission.getMethod())) {

@@ -28,7 +28,7 @@ public class PaymentService {
 
     public PaymentDto createPayment(Payment payment) {
         if (paymentRepository.existsByTransactionId(payment.getTransactionId())) {
-            throw new ResourceAlreadyExistsException("Thanh toán", "transactionId", payment.getTransactionId());
+            throw new ResourceAlreadyExistsException("Thanh toán", "mã thanh toán", payment.getTransactionId());
         }
         Event event = eventRepository.findById(payment.getEvent().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sự kiện", "ID", payment.getEvent().getId()));
@@ -47,7 +47,7 @@ public class PaymentService {
 
         if (!payment.getTransactionId().equals(updatedPayment.getTransactionId()) &&
                 paymentRepository.existsByTransactionId(updatedPayment.getTransactionId())) {
-            throw new ResourceAlreadyExistsException("Thanh toán", "transactionId", updatedPayment.getTransactionId());
+            throw new ResourceAlreadyExistsException("Thanh toán", "mã thanh toán", updatedPayment.getTransactionId());
         }
 
         if (updatedPayment.getEvent() != null) {

@@ -1,6 +1,6 @@
 package com.hoangloc.homilux.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +23,6 @@ public class Payment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
-    @JsonBackReference
     private Event event;
 
     private String transactionId;

@@ -1,7 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class Menu extends BaseEntity {
             joinColumns = @JoinColumn(name = "menu_id"),
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
-    @JsonManagedReference
+    @JsonIgnoreProperties("menus")
     private List<Dish> dishes;
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)

@@ -25,7 +25,7 @@ public class RoleService {
 
     public RoleDto createRole(Role role) {
         if (roleRepository.existsByName(role.getName())) {
-            throw new ResourceAlreadyExistsException("Vai trò", "name", role.getName());
+            throw new ResourceAlreadyExistsException("Vai trò", "tên", role.getName());
         }
 
         List<Permission> permissions = role.getPermissions().stream()
@@ -47,7 +47,7 @@ public class RoleService {
 
         if (!role.getName().equals(updatedRole.getName()) &&
                 roleRepository.existsByName(updatedRole.getName())) {
-            throw new ResourceAlreadyExistsException("Vai trò", "name", updatedRole.getName());
+            throw new ResourceAlreadyExistsException("Vai trò", "tên", updatedRole.getName());
         }
 
         role.setName(updatedRole.getName());

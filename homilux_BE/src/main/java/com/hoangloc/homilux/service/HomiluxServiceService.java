@@ -8,6 +8,7 @@ import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.EventTypeRepository;
 import com.hoangloc.homilux.repository.ServiceRepository;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class HomiluxServiceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Loại sự kiện", "ID", service.getEventType().getId()));
 
         if (serviceRepository.existsByNameAndEventTypeId(service.getName(), eventType.getId())) {
-            throw new ResourceAlreadyExistsException("Dịch vụ", "name và eventTypeId", service.getName() + ", " + eventType.getId());
+            throw new ResourceAlreadyExistsException("Dịch vụ", "tên và loại sự kiện", service.getName() + ", " + eventType.getId());
         }
 
         service.setEventType(eventType);
@@ -50,7 +51,7 @@ public class HomiluxServiceService {
 
         if (!service.getName().equals(updatedService.getName()) || !service.getEventType().getId().equals(eventType.getId())) {
             if (serviceRepository.existsByNameAndEventTypeId(updatedService.getName(), eventType.getId())) {
-                throw new ResourceAlreadyExistsException("Dịch vụ", "name và eventTypeId", updatedService.getName() + ", " + eventType.getId());
+                throw new ResourceAlreadyExistsException("Dịch vụ", "tên và loại sự kiện", updatedService.getName() + ", " + eventType.getId());
             }
         }
 

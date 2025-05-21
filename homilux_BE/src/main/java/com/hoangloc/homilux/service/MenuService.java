@@ -26,7 +26,7 @@ public class MenuService {
 
     public MenuDto createMenu(Menu menu) {
         if (menuRepository.existsByName(menu.getName())) {
-            throw new ResourceAlreadyExistsException("Thực đơn", "name", menu.getName());
+            throw new ResourceAlreadyExistsException("Thực đơn", "tên", menu.getName());
         }
 
         List<Dish> dishes = menu.getDishes().stream()
@@ -48,7 +48,7 @@ public class MenuService {
 
         if (!menu.getName().equals(updatedMenu.getName()) &&
                 menuRepository.existsByName(updatedMenu.getName())) {
-            throw new ResourceAlreadyExistsException("Thực đơn", "name", updatedMenu.getName());
+            throw new ResourceAlreadyExistsException("Thực đơn", "tên", updatedMenu.getName());
         }
 
         menu.setName(updatedMenu.getName());

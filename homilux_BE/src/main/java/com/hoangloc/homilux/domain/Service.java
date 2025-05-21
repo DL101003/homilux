@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,11 +26,10 @@ public class Service extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_type_id")
-    @JsonBackReference
     private EventType eventType;
 
     @ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonIgnore
     private List<Event> events;
 
 }

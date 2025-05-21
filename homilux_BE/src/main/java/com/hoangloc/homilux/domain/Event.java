@@ -2,6 +2,7 @@ package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hoangloc.homilux.util.LocationType;
 import com.hoangloc.homilux.util.PaymentMethod;
@@ -29,12 +30,10 @@ public class Event extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_type_id")
-    @JsonBackReference
     private EventType eventType;
 
     @Enumerated(EnumType.STRING)
@@ -54,7 +53,6 @@ public class Event extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
-    @JsonBackReference
     private Menu menu;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -63,7 +61,7 @@ public class Event extends BaseEntity {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    @JsonManagedReference
+    @JsonIgnoreProperties("events")
     private List<Service> services;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)

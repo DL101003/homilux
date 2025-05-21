@@ -3,7 +3,6 @@ package com.hoangloc.homilux.controller;
 import com.hoangloc.homilux.domain.Payment;
 import com.hoangloc.homilux.domain.dto.PaymentDto;
 import com.hoangloc.homilux.service.PaymentService;
-import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +32,7 @@ public class Role extends BaseEntity {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    @JsonManagedReference
+    @JsonIgnoreProperties("roles")
     private List<Permission> permissions;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

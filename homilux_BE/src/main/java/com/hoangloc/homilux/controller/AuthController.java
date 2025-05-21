@@ -31,16 +31,13 @@ public class AuthController {
 
     private final UserService userService;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Value("${homilux.jwt.refresh-token-validity-in-seconds}")
     private Long refreshTokenExpiration;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil, UserService userService, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil, UserService userService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/auth/login")
@@ -150,14 +147,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<UserDto> register(@Valid @RequestBody User postmanUser) throws ResourceAlreadyExistsException {
-
-        if (userService.isEmailExist(postmanUser.getEmail())) {
-            throw new ResourceAlreadyExistsException("Người dùng", "email", postmanUser.getEmail());
-        }
-
-        String hassPassword = passwordEncoder.encode(postmanUser.getPassword());
-        postmanUser.setPassword(hassPassword);
+    public ResponseEntity<UserDto> register(@Valid @RequestBody User postmanUser) {
         UserDto user = userService.createUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
