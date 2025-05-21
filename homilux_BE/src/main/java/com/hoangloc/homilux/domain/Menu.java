@@ -21,7 +21,7 @@ public class Menu extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String menuName;
+    private String name;
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)

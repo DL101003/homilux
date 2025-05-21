@@ -3,7 +3,7 @@ package com.hoangloc.homilux.controller;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.ReqLoginDto;
 import com.hoangloc.homilux.domain.dto.ResLoginDto;
-import com.hoangloc.homilux.domain.dto.UserCreateDto;
+import com.hoangloc.homilux.domain.dto.UserDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.service.UserService;
 import com.hoangloc.homilux.util.SecurityUtil;
@@ -54,7 +54,7 @@ public class AuthController {
         ResLoginDto res = new ResLoginDto();
         User currentUserDB = userService.handleGetUserByUsername(reqLoginDTO.getUsername());
         if (currentUserDB != null) {
-            ResLoginDto.UserLogin userlogin = new ResLoginDto.UserLogin(currentUserDB.getId(), currentUserDB.getUsername(), currentUserDB.getEmail(), currentUserDB.getRole());
+            ResLoginDto.UserLogin userlogin = new ResLoginDto.UserLogin(currentUserDB.getId(), currentUserDB.getName(), currentUserDB.getEmail(), currentUserDB.getRole());
             res.setUser(userlogin);
         }
 
@@ -88,7 +88,7 @@ public class AuthController {
         if (currentUserDB != null) {
             userlogin.setId(currentUserDB.getId());
             userlogin.setEmail(currentUserDB.getEmail());
-            userlogin.setName(currentUserDB.getUsername());
+            userlogin.setName(currentUserDB.getName());
             userlogin.setRole(currentUserDB.getRole());
             usetGetAccount.setUser(userlogin);
         }
@@ -106,7 +106,7 @@ public class AuthController {
         ResLoginDto res = new ResLoginDto();
         User currentUserDB = userService.handleGetUserByUsername(email);
         if (currentUserDB != null) {
-            ResLoginDto.UserLogin userlogin = new ResLoginDto.UserLogin(currentUserDB.getId(), currentUserDB.getUsername(), currentUserDB.getEmail(), currentUserDB.getRole());
+            ResLoginDto.UserLogin userlogin = new ResLoginDto.UserLogin(currentUserDB.getId(), currentUserDB.getName(), currentUserDB.getEmail(), currentUserDB.getRole());
             res.setUser(userlogin);
         }
 
@@ -150,7 +150,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<UserCreateDto> register(@Valid @RequestBody User postmanUser) throws ResourceAlreadyExistsException {
+    public ResponseEntity<UserDto> register(@Valid @RequestBody User postmanUser) throws ResourceAlreadyExistsException {
 
         if (userService.isEmailExist(postmanUser.getEmail())) {
             throw new ResourceAlreadyExistsException("Người dùng", "email", postmanUser.getEmail());
@@ -158,7 +158,7 @@ public class AuthController {
 
         String hassPassword = passwordEncoder.encode(postmanUser.getPassword());
         postmanUser.setPassword(hassPassword);
-        UserCreateDto user = userService.createUser(postmanUser);
+        UserDto user = userService.createUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }

@@ -30,10 +30,10 @@ public class RoleService {
         if (roleRepository.existsByName(role.getName())) {
             throw new ResourceAlreadyExistsException("Vai trò", "tên", role.getName());
         }
-        Set<Permission> permissions = role.getPermissions().stream()
+        List<Permission> permissions = role.getPermissions().stream()
                 .map(permission -> permissionRepository.findById(permission.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", permission.getId())))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         role.setPermissions(permissions);
         Role savedRole = roleRepository.save(role);
         return toCreateDto(savedRole);
@@ -66,10 +66,10 @@ public class RoleService {
             role.setName(updatedRole.getName());
         }
         if (updatedRole.getPermissions() != null) {
-            Set<Permission> permissions = updatedRole.getPermissions().stream()
+            List<Permission> permissions = updatedRole.getPermissions().stream()
                     .map(permission -> permissionRepository.findById(permission.getId())
                             .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", permission.getId())))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             role.setPermissions(permissions);
         }
         Role savedRole = roleRepository.save(role);

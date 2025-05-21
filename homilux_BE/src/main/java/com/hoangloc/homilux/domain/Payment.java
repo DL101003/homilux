@@ -28,7 +28,6 @@ public class Payment extends BaseEntity {
 
     private String transactionId;
 
-    @Column(precision = 10, scale = 2)
     private double amount;
 
     private Instant paymentDate;

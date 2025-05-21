@@ -21,7 +21,7 @@ public class Dish extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String dishName;
+    private String name;
     private double price;
     private String description;
     private String imageUrl;

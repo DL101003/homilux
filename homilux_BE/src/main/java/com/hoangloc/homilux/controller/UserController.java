@@ -1,8 +1,6 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.User;
-import com.hoangloc.homilux.domain.dto.UserCreateDto;
-import com.hoangloc.homilux.domain.dto.UserUpdateDto;
 import com.hoangloc.homilux.domain.dto.UserDto;
 import com.hoangloc.homilux.service.UserService;
 import jakarta.validation.Valid;
@@ -23,8 +21,8 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserCreateDto> createUser(@Valid @RequestBody User user) {
-        UserCreateDto createdUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody User user) {
+        var createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
@@ -41,8 +39,8 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ResponseEntity<UserUpdateDto> updateUser(@RequestBody User user) {
-        UserUpdateDto updatedUser = userService.updateUser(user);
+    public ResponseEntity<UserDto> updateUser(@RequestBody User user) {
+        var updatedUser = userService.updateUser(user);
         return ResponseEntity.ok(updatedUser);
     }
 

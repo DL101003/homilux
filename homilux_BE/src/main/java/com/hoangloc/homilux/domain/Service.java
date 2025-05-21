@@ -20,7 +20,7 @@ public class Service extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String serviceName;
+    private String name;
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)

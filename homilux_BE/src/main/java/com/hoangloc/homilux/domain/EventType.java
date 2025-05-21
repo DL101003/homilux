@@ -20,7 +20,7 @@ public class EventType extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String typeName;
+    private String name;
 
     @OneToMany(mappedBy = "eventType", fetch = FetchType.LAZY)
     @JsonIgnore
