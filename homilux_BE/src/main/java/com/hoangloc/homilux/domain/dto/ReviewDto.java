@@ -10,7 +10,8 @@ import java.time.Instant;
 public class ReviewDto {
     private Long id;
     private Long userId;
-    private Long bookingId;
+    private Long eventId;
+    private Long dishId;
     private Integer rating;
     private String comment;
     private Instant createdAt;

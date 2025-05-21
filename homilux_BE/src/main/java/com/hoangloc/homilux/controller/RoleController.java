@@ -1,9 +1,7 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Role;
-import com.hoangloc.homilux.domain.dto.RoleCreateDto;
 import com.hoangloc.homilux.domain.dto.RoleDto;
-import com.hoangloc.homilux.domain.dto.RoleUpdateDto;
 import com.hoangloc.homilux.service.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,8 +21,8 @@ public class RoleController {
     }
 
     @PostMapping("/roles")
-    public ResponseEntity<RoleCreateDto> createRole(@Valid @RequestBody Role role) {
-        RoleCreateDto createdRole = roleService.createRole(role);
+    public ResponseEntity<RoleDto> createRole(@Valid @RequestBody Role role) {
+        RoleDto createdRole = roleService.createRole(role);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
@@ -41,8 +39,8 @@ public class RoleController {
     }
 
     @PutMapping("/roles")
-    public ResponseEntity<RoleUpdateDto> updateRole(@RequestBody Role role) {
-        RoleUpdateDto updatedRole = roleService.updateRole(role);
+    public ResponseEntity<RoleDto> updateRole(@RequestBody Role role) {
+        RoleDto updatedRole = roleService.updateRole(role);
         return ResponseEntity.ok(updatedRole);
     }
 

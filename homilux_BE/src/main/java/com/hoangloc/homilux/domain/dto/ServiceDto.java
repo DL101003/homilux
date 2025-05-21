@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.Set;
 
 @Getter
 @Setter
-public class RoleCreateDto {
+public class ServiceDto {
     private Long id;
     private String name;
-    private Set<Long> permissionIds;
+    private Double price;
+    private Long eventTypeId;
     private Instant createdAt;
+    private Instant updatedAt;
 }

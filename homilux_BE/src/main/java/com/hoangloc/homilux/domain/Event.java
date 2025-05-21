@@ -52,14 +52,10 @@ public class Event extends BaseEntity {
 
     private LocalDate contractDate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "event_menus",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id")
-    )
-    @JsonManagedReference
-    private List<Menu> menus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    @JsonBackReference
+    private Menu menu;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

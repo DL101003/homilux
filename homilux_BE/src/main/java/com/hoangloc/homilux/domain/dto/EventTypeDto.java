@@ -5,13 +5,16 @@ import lombok.Setter;
 
 import java.time.Instant;
 
+
 @Getter
 @Setter
-public class PermissionUpdateDto {
+public class EventTypeDto {
     private Long id;
+
     private String name;
-    private String apiPath;
-    private String method;
-    private String module;
+
+    private String description;
+
+    private Instant createdAt;
     private Instant updatedAt;
 }

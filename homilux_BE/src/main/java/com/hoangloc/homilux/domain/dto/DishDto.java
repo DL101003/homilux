@@ -4,13 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.Set;
+
 
 @Getter
 @Setter
-public class RoleUpdateDto {
+public class DishDto {
     private Long id;
     private String name;
-    private Set<Long> permissionIds;
+    private double price;
+    private String description;
+    private String imageUrl;
+    private String category;
+    private Instant createdAt;
     private Instant updatedAt;
 }

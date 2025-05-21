@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
 public class RoleDto {
     private Long id;
     private String name;
-    private Set<Long> permissionIds;
+    private List<Long> permissionIds;
     private Instant createdAt;
     private Instant updatedAt;
 }

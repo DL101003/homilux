@@ -22,6 +22,8 @@ public class EventType extends BaseEntity {
 
     private String name;
 
+    private String description;
+
     @OneToMany(mappedBy = "eventType", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Event> events;

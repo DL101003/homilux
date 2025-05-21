@@ -1,9 +1,7 @@
 package com.hoangloc.homilux.service;
 
 import com.hoangloc.homilux.domain.Permission;
-import com.hoangloc.homilux.domain.dto.PermissionCreateDto;
 import com.hoangloc.homilux.domain.dto.PermissionDto;
-import com.hoangloc.homilux.domain.dto.PermissionUpdateDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.PermissionRepository;
@@ -21,12 +19,48 @@ public class PermissionService {
         this.permissionRepository = permissionRepository;
     }
 
-    public PermissionCreateDto createPermission(Permission permission) {
+    public PermissionDto createPermission(Permission permission) {
         if (permissionRepository.existsByName(permission.getName())) {
-            throw new ResourceAlreadyExistsException("Quyền", "tên", permission.getName());
+            throw new ResourceAlreadyExistsException("Quyền", "name", permission.getName());
+        }
+        if (permissionRepository.existsByApiPathAndMethod(permission.getApiPath(), permission.getMethod())) {
+            throw new ResourceAlreadyExistsException("Quyền", "apiPath và method", permission.getApiPath() + ", " + permission.getMethod());
         }
         Permission savedPermission = permissionRepository.save(permission);
-        return toCreateDto(savedPermission);
+        return toDto(savedPermission);
+    }
+
+    public PermissionDto updatePermission(Permission updatedPermission) {
+        if (updatedPermission.getId() == null) {
+            throw new IllegalArgumentException("ID quyền không được để trống!");
+        }
+        Permission permission = permissionRepository.findById(updatedPermission.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", updatedPermission.getId()));
+
+        if (!permission.getName().equals(updatedPermission.getName()) &&
+                permissionRepository.existsByName(updatedPermission.getName())) {
+            throw new ResourceAlreadyExistsException("Quyền", "name", updatedPermission.getName());
+        }
+        if (!permission.getApiPath().equals(updatedPermission.getApiPath()) ||
+                !permission.getMethod().equals(updatedPermission.getMethod())) {
+            if (permissionRepository.existsByApiPathAndMethod(updatedPermission.getApiPath(), updatedPermission.getMethod())) {
+                throw new ResourceAlreadyExistsException("Quyền", "apiPath và method", updatedPermission.getApiPath() + ", " + updatedPermission.getMethod());
+            }
+        }
+
+        permission.setName(updatedPermission.getName());
+        permission.setApiPath(updatedPermission.getApiPath());
+        permission.setMethod(updatedPermission.getMethod());
+        permission.setModule(updatedPermission.getModule());
+
+        Permission savedPermission = permissionRepository.save(permission);
+        return toDto(savedPermission);
+    }
+
+    public void deletePermission(Long id) {
+        permissionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
+        permissionRepository.deleteById(id); // Triggers soft delete via @SQLDelete
     }
 
     public PermissionDto getPermissionById(Long id) {
@@ -42,38 +76,6 @@ public class PermissionService {
                 .collect(Collectors.toList());
     }
 
-    public PermissionUpdateDto updatePermission(Permission updatedPermission) {
-        if (updatedPermission.getId() == null) {
-            throw new IllegalArgumentException("ID quyền không được để trống!");
-        }
-        Permission permission = permissionRepository.findById(updatedPermission.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", updatedPermission.getId()));
-        if (updatedPermission.getName() != null && !updatedPermission.getName().equals(permission.getName()) &&
-                permissionRepository.existsByName(updatedPermission.getName())) {
-            throw new ResourceAlreadyExistsException("Quyền", "tên", updatedPermission.getName());
-        }
-        if (updatedPermission.getName() != null) {
-            permission.setName(updatedPermission.getName());
-        }
-        if (updatedPermission.getApiPath() != null) {
-            permission.setApiPath(updatedPermission.getApiPath());
-        }
-        if (updatedPermission.getMethod() != null) {
-            permission.setMethod(updatedPermission.getMethod());
-        }
-        if (updatedPermission.getModule() != null) {
-            permission.setModule(updatedPermission.getModule());
-        }
-        Permission savedPermission = permissionRepository.save(permission);
-        return toUpdateDto(savedPermission);
-    }
-
-    public void deletePermission(Long id) {
-        permissionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
-        permissionRepository.deleteById(id);
-    }
-
     private PermissionDto toDto(Permission permission) {
         PermissionDto dto = new PermissionDto();
         dto.setId(permission.getId());
@@ -82,28 +84,6 @@ public class PermissionService {
         dto.setMethod(permission.getMethod());
         dto.setModule(permission.getModule());
         dto.setCreatedAt(permission.getCreatedAt());
-        dto.setUpdatedAt(permission.getUpdatedAt());
-        return dto;
-    }
-
-    private PermissionCreateDto toCreateDto(Permission permission) {
-        PermissionCreateDto dto = new PermissionCreateDto();
-        dto.setId(permission.getId());
-        dto.setName(permission.getName());
-        dto.setApiPath(permission.getApiPath());
-        dto.setMethod(permission.getMethod());
-        dto.setModule(permission.getModule());
-        dto.setCreatedAt(permission.getCreatedAt());
-        return dto;
-    }
-
-    private PermissionUpdateDto toUpdateDto(Permission permission) {
-        PermissionUpdateDto dto = new PermissionUpdateDto();
-        dto.setId(permission.getId());
-        dto.setName(permission.getName());
-        dto.setApiPath(permission.getApiPath());
-        dto.setMethod(permission.getMethod());
-        dto.setModule(permission.getModule());
         dto.setUpdatedAt(permission.getUpdatedAt());
         return dto;
     }

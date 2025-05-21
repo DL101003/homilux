@@ -1,9 +1,7 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Permission;
-import com.hoangloc.homilux.domain.dto.PermissionCreateDto;
 import com.hoangloc.homilux.domain.dto.PermissionDto;
-import com.hoangloc.homilux.domain.dto.PermissionUpdateDto;
 import com.hoangloc.homilux.service.PermissionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,8 +21,8 @@ public class PermissionController {
     }
 
     @PostMapping("/permissions")
-    public ResponseEntity<PermissionCreateDto> createPermission(@Valid @RequestBody Permission permission) {
-        PermissionCreateDto createdPermission = permissionService.createPermission(permission);
+    public ResponseEntity<PermissionDto> createPermission(@Valid @RequestBody Permission permission) {
+        PermissionDto createdPermission = permissionService.createPermission(permission);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPermission);
     }
 
@@ -41,8 +39,8 @@ public class PermissionController {
     }
 
     @PutMapping("/permissions")
-    public ResponseEntity<PermissionUpdateDto> updatePermission(@RequestBody Permission permission) {
-        PermissionUpdateDto updatedPermission = permissionService.updatePermission(permission);
+    public ResponseEntity<PermissionDto> updatePermission(@RequestBody Permission permission) {
+        PermissionDto updatedPermission = permissionService.updatePermission(permission);
         return ResponseEntity.ok(updatedPermission);
     }
 

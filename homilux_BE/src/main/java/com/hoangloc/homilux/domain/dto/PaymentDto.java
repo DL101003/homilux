@@ -1,9 +1,9 @@
 package com.hoangloc.homilux.domain.dto;
 
+import com.hoangloc.homilux.util.PaymentStatus;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 
@@ -11,11 +11,11 @@ import java.time.Instant;
 @Setter
 public class PaymentDto {
     private Long id;
-    private Long bookingId;
-    private BigDecimal amount;
-    private String paymentMethod;
-    private String paymentStatus;
+    private Long eventId;
+    private String transactionId;
+    private double amount;
     private Instant paymentDate;
+    private PaymentStatus status;
     private Instant createdAt;
     private Instant updatedAt;
 }
