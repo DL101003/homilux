@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,7 +1,5 @@
 package com.hoangloc.homilux.service;
 
-
-
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.Payment;
 import com.hoangloc.homilux.domain.dto.PaymentDto;
@@ -9,7 +7,6 @@ import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.EventRepository;
 import com.hoangloc.homilux.repository.PaymentRepository;
-import com.hoangloc.homilux.util.PaymentStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

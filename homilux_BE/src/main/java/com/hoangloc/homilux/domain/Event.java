@@ -1,9 +1,7 @@
 package com.hoangloc.homilux.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hoangloc.homilux.util.LocationType;
 import com.hoangloc.homilux.util.PaymentMethod;
 import com.hoangloc.homilux.util.PaymentStatus;

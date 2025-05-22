@@ -4,7 +4,6 @@ import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.ReqLoginDto;
 import com.hoangloc.homilux.domain.dto.ResLoginDto;
 import com.hoangloc.homilux.domain.dto.UserDto;
-import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.service.UserService;
 import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.validation.Valid;
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,5 @@
 package com.hoangloc.homilux.service;
 
-
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.EventType;
 import com.hoangloc.homilux.domain.Menu;

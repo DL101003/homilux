@@ -8,7 +8,6 @@ import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.EventTypeRepository;
 import com.hoangloc.homilux.repository.ServiceRepository;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
