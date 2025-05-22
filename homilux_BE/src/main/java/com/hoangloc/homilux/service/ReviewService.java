@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Dish;
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.Review;
@@ -13,17 +14,15 @@ import com.hoangloc.homilux.repository.ReviewRepository;
 import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class ReviewService {
+public class ReviewService extends AbstractPaginationService<Review> {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final DishRepository dishRepository;
 
     public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, EventRepository eventRepository, DishRepository dishRepository) {
+        super(reviewRepository);
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
@@ -106,26 +105,19 @@ public class ReviewService {
         return toDto(review);
     }
 
-    public List<ReviewDto> getAllReviews() {
-        return reviewRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
+//    public List<ReviewDto> getReviewsByEventId(Long eventId) {
+//        return reviewRepository.findByEventId(eventId)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
 
-    public List<ReviewDto> getReviewsByEventId(Long eventId) {
-        return reviewRepository.findByEventId(eventId)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<ReviewDto> getReviewsByDishId(Long dishId) {
-        return reviewRepository.findByDishId(dishId)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
+//    public List<ReviewDto> getReviewsByDishId(Long dishId) {
+//        return reviewRepository.findByDishId(dishId)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
 
     private ReviewDto toDto(Review review) {
         ReviewDto dto = new ReviewDto();

@@ -2,13 +2,15 @@ package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Menu;
 import com.hoangloc.homilux.domain.dto.MenuDto;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.MenuService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -27,9 +29,8 @@ public class MenuController {
     }
 
     @GetMapping("/menus")
-    public ResponseEntity<List<MenuDto>> getAllMenus() {
-        List<MenuDto> menus = menuService.getAllMenus();
-        return ResponseEntity.ok(menus);
+    public ResponseEntity<ResultPaginationDTO> getAllMenus(@Filter Specification<Menu> spec, Pageable pageable) {
+        return ResponseEntity.ok(menuService.getAll(spec, pageable));
     }
 
     @GetMapping("/menus/{id}")

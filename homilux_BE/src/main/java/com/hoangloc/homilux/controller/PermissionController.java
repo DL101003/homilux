@@ -2,8 +2,12 @@ package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Permission;
 import com.hoangloc.homilux.domain.dto.PermissionDto;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.PermissionService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +31,8 @@ public class PermissionController {
     }
 
     @GetMapping("/permissions")
-    public ResponseEntity<List<PermissionDto>> getAllPermissions() {
-        List<PermissionDto> permissions = permissionService.getAllPermissions();
-        return ResponseEntity.ok(permissions);
+    public ResponseEntity<ResultPaginationDTO> getAllPermissions(@Filter Specification<Permission> spec, Pageable pageable) {
+        return ResponseEntity.ok(permissionService.getAll(spec, pageable));
     }
 
     @GetMapping("/permissions/{id}")

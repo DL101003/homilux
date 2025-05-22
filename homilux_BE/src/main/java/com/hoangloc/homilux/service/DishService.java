@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Dish;
 import com.hoangloc.homilux.domain.dto.DishDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
@@ -7,15 +8,13 @@ import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.DishRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class DishService {
+public class DishService extends AbstractPaginationService<Dish> {
 
     private final DishRepository dishRepository;
 
     public DishService(DishRepository dishRepository) {
+        super(dishRepository);
         this.dishRepository = dishRepository;
     }
 
@@ -61,19 +60,12 @@ public class DishService {
         return toDto(dish);
     }
 
-    public List<DishDto> getAllDishes() {
-        return dishRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<DishDto> getDishesByCategory(String category) {
-        return dishRepository.findByCategory(category)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
+//    public List<DishDto> getDishesByCategory(String category) {
+//        return dishRepository.findByCategory(category)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
 
     private DishDto toDto(Dish dish) {
         DishDto dto = new DishDto();

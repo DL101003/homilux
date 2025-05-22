@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Role;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.domain.dto.UserDto;
@@ -10,17 +11,15 @@ import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class UserService {
+public class UserService extends AbstractPaginationService<User> {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+        super(userRepository);
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -44,13 +43,6 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", id));
         return toDto(user);
-    }
-
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
     public UserDto updateUser(User updatedUser) {

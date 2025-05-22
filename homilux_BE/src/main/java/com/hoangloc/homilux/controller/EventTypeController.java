@@ -2,8 +2,12 @@ package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.EventType;
 import com.hoangloc.homilux.domain.dto.EventTypeDto;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.EventTypeService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +32,8 @@ public class EventTypeController {
     }
 
     @GetMapping("/event-types")
-    public ResponseEntity<List<EventTypeDto>> getAllEventTypes() {
-        List<EventTypeDto> eventTypes = eventTypeService.getAllEventTypes();
-        return ResponseEntity.ok(eventTypes);
+    public ResponseEntity<ResultPaginationDTO> getAllEventTypes(@Filter Specification<EventType> spec, Pageable pageable) {
+        return ResponseEntity.ok(eventTypeService.getAll(spec, pageable));
     }
 
     @GetMapping("/event-types/{id}")

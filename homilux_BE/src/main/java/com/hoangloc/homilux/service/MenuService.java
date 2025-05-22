@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Dish;
 import com.hoangloc.homilux.domain.Menu;
 import com.hoangloc.homilux.domain.dto.MenuDto;
@@ -13,12 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MenuService {
+public class MenuService extends AbstractPaginationService<Menu> {
 
     private final MenuRepository menuRepository;
     private final DishRepository dishRepository;
 
     public MenuService(MenuRepository menuRepository, DishRepository dishRepository) {
+        super(menuRepository);
         this.menuRepository = menuRepository;
         this.dishRepository = dishRepository;
     }
@@ -78,13 +80,6 @@ public class MenuService {
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Thực đơn", "ID", id));
         return toDto(menu);
-    }
-
-    public List<MenuDto> getAllMenus() {
-        return menuRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
     private MenuDto toDto(Menu menu) {

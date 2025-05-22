@@ -1,9 +1,13 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Role;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.domain.dto.RoleDto;
 import com.hoangloc.homilux.service.RoleService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +31,8 @@ public class RoleController {
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<List<RoleDto>> getAllRoles() {
-        List<RoleDto> roles = roleService.getAllRoles();
-        return ResponseEntity.ok(roles);
+    public ResponseEntity<ResultPaginationDTO> getAllRoles(@Filter Specification<Role> spec, Pageable pageable) {
+        return ResponseEntity.ok(roleService.getAll(spec, pageable));
     }
 
     @GetMapping("/roles/{id}")

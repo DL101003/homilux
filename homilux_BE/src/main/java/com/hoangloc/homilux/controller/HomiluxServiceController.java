@@ -1,14 +1,16 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Service;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.domain.dto.ServiceDto;
 import com.hoangloc.homilux.service.HomiluxServiceService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -27,9 +29,8 @@ public class HomiluxServiceController {
     }
 
     @GetMapping("/services")
-    public ResponseEntity<List<ServiceDto>> getAllServices() {
-        List<ServiceDto> services = serviceService.getAllServices();
-        return ResponseEntity.ok(services);
+    public ResponseEntity<ResultPaginationDTO> getAllServices(@Filter Specification<Service> spec, Pageable pageable) {
+        return ResponseEntity.ok(serviceService.getAll(spec, pageable));
     }
 
     @GetMapping("/services/{id}")

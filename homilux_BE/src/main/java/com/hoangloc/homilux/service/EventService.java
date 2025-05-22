@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.EventType;
 import com.hoangloc.homilux.domain.Menu;
@@ -10,20 +11,17 @@ import com.hoangloc.homilux.repository.EventRepository;
 import com.hoangloc.homilux.repository.EventTypeRepository;
 import com.hoangloc.homilux.repository.MenuRepository;
 import com.hoangloc.homilux.repository.UserRepository;
-import com.hoangloc.homilux.util.PaymentStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class EventService {
+public class EventService extends AbstractPaginationService<Event> {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final EventTypeRepository eventTypeRepository;
     private final MenuRepository menuRepository;
 
     public EventService(EventRepository eventRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, MenuRepository menuRepository) {
+        super(eventRepository);
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.eventTypeRepository = eventTypeRepository;
@@ -97,19 +95,12 @@ public class EventService {
         return toDto(event);
     }
 
-    public List<EventDto> getAllEvents() {
-        return eventRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<EventDto> getEventsByPaymentStatus(PaymentStatus paymentStatus) {
-        return eventRepository.findByPaymentStatus(paymentStatus)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
+//    public List<EventDto> getEventsByPaymentStatus(PaymentStatus paymentStatus) {
+//        return eventRepository.findByPaymentStatus(paymentStatus)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
 
     private EventDto toDto(Event event) {
         EventDto dto = new EventDto();

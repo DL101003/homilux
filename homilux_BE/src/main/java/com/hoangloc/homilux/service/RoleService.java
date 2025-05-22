@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Permission;
 import com.hoangloc.homilux.domain.Role;
 import com.hoangloc.homilux.domain.dto.RoleDto;
@@ -13,12 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleService {
+public class RoleService extends AbstractPaginationService<Role> {
 
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
 
     public RoleService(RoleRepository roleRepository, PermissionRepository permissionRepository) {
+        super(roleRepository);
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
     }
@@ -77,13 +79,6 @@ public class RoleService {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vai trò", "ID", id));
         return toDto(role);
-    }
-
-    public List<RoleDto> getAllRoles() {
-        return roleRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
     private RoleDto toDto(Role role) {

@@ -2,8 +2,12 @@ package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Dish;
 import com.hoangloc.homilux.domain.dto.DishDto;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.DishService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +31,8 @@ public class DishController {
     }
 
     @GetMapping("/dishes")
-    public ResponseEntity<List<DishDto>> getAllDishes(@RequestParam(required = false) String category) {
-        List<DishDto> dishes = category != null ? dishService.getDishesByCategory(category) : dishService.getAllDishes();
-        return ResponseEntity.ok(dishes);
+    public ResponseEntity<ResultPaginationDTO> getAllDishes(@Filter Specification<Dish> spec, Pageable pageable) {
+        return ResponseEntity.ok(dishService.getAll(spec, pageable));
     }
 
     @GetMapping("/dishes/{id}")

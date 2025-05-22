@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.Payment;
 import com.hoangloc.homilux.domain.dto.PaymentDto;
@@ -9,16 +10,14 @@ import com.hoangloc.homilux.repository.EventRepository;
 import com.hoangloc.homilux.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class PaymentService {
+public class PaymentService extends AbstractPaginationService<Payment> {
 
     private final PaymentRepository paymentRepository;
     private final EventRepository eventRepository;
 
     public PaymentService(PaymentRepository paymentRepository, EventRepository eventRepository) {
+        super(paymentRepository);
         this.paymentRepository = paymentRepository;
         this.eventRepository = eventRepository;
     }
@@ -74,19 +73,12 @@ public class PaymentService {
         return toDto(payment);
     }
 
-    public List<PaymentDto> getAllPayments() {
-        return paymentRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<PaymentDto> getPaymentsByPaymentStatus(String paymentStatus) {
-        return paymentRepository.findPaymentsByStatus(paymentStatus)
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
+//    public List<PaymentDto> getPaymentsByPaymentStatus(String paymentStatus) {
+//        return paymentRepository.findPaymentsByStatus(paymentStatus)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
 
     private PaymentDto toDto(Payment payment) {
         PaymentDto dto = new PaymentDto();

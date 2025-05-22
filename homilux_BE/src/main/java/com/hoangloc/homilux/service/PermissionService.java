@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.Permission;
 import com.hoangloc.homilux.domain.dto.PermissionDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
@@ -7,15 +8,13 @@ import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.PermissionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class PermissionService {
+public class PermissionService extends AbstractPaginationService<Permission> {
 
     private final PermissionRepository permissionRepository;
 
     public PermissionService(PermissionRepository permissionRepository) {
+        super(permissionRepository);
         this.permissionRepository = permissionRepository;
     }
 
@@ -67,13 +66,6 @@ public class PermissionService {
         Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
         return toDto(permission);
-    }
-
-    public List<PermissionDto> getAllPermissions() {
-        return permissionRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
     private PermissionDto toDto(Permission permission) {

@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.service;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.domain.EventType;
 import com.hoangloc.homilux.domain.dto.EventTypeDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
@@ -7,15 +8,13 @@ import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.EventTypeRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class EventTypeService {
+public class EventTypeService extends AbstractPaginationService<EventType> {
 
     private final EventTypeRepository eventTypeRepository;
 
     public EventTypeService(EventTypeRepository eventTypeRepository) {
+        super(eventTypeRepository);
         this.eventTypeRepository = eventTypeRepository;
     }
 
@@ -56,13 +55,6 @@ public class EventTypeService {
         EventType eventType = eventTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Loại sự kiện", "ID", id));
         return toDto(eventType);
-    }
-
-    public List<EventTypeDto> getAllEventTypes() {
-        return eventTypeRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
     }
 
     private EventTypeDto toDto(EventType eventType) {

@@ -1,9 +1,13 @@
 package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Review;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.domain.dto.ReviewDto;
 import com.hoangloc.homilux.service.ReviewService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,18 +31,16 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewDto>> getAllReviews(
-            @RequestParam(required = false) Long eventId,
-            @RequestParam(required = false) Long dishId) {
-        List<ReviewDto> reviews;
-        if (eventId != null) {
-            reviews = reviewService.getReviewsByEventId(eventId);
-        } else if (dishId != null) {
-            reviews = reviewService.getReviewsByDishId(dishId);
-        } else {
-            reviews = reviewService.getAllReviews();
-        }
-        return ResponseEntity.ok(reviews);
+    public ResponseEntity<ResultPaginationDTO> getAllReviews(@Filter Specification<Review> spec, Pageable pageable) {
+//        List<ReviewDto> reviews;
+//        if (eventId != null) {
+//            reviews = reviewService.getReviewsByEventId(eventId);
+//        } else if (dishId != null) {
+//            reviews = reviewService.getReviewsByDishId(dishId);
+//        } else {
+//            reviews = reviewService.getAllReviews();
+//        }
+        return ResponseEntity.ok(reviewService.getAll(spec, pageable));
     }
 
     @GetMapping("/reviews/{id}")

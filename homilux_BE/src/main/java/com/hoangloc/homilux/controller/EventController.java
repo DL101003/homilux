@@ -2,9 +2,13 @@ package com.hoangloc.homilux.controller;
 
 import com.hoangloc.homilux.domain.Event;
 import com.hoangloc.homilux.domain.dto.EventDto;
+import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.EventService;
 import com.hoangloc.homilux.util.PaymentStatus;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +32,9 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<List<EventDto>> getAllEvents(@RequestParam(required = false) PaymentStatus paymentStatus) {
-        List<EventDto> events = paymentStatus != null ? eventService.getEventsByPaymentStatus(paymentStatus) : eventService.getAllEvents();
-        return ResponseEntity.ok(events);
+    public ResponseEntity<ResultPaginationDTO> getAllEvents(@Filter Specification<Event> spec, Pageable pageable) {
+//        List<EventDto> events = paymentStatus != null ? eventService.getEventsByPaymentStatus(paymentStatus) : eventService.getAllEvents();
+        return ResponseEntity.ok(eventService.getAll(spec, pageable));
     }
 
     @GetMapping("/events/{id}")
