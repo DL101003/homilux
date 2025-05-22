@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MenuService extends AbstractPaginationService<Menu> {
+public class MenuService extends AbstractPaginationService<Menu, MenuDto> {
 
     private final MenuRepository menuRepository;
     private final DishRepository dishRepository;
@@ -82,7 +82,8 @@ public class MenuService extends AbstractPaginationService<Menu> {
         return toDto(menu);
     }
 
-    private MenuDto toDto(Menu menu) {
+    @Override
+    protected MenuDto toDto(Menu menu) {
         MenuDto dto = new MenuDto();
         dto.setId(menu.getId());
         dto.setName(menu.getName());

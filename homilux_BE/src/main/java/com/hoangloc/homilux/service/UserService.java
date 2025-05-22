@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService extends AbstractPaginationService<User> {
+public class UserService extends AbstractPaginationService<User, UserDto> {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -70,7 +70,8 @@ public class UserService extends AbstractPaginationService<User> {
         userRepository.deleteById(id);
     }
 
-    private UserDto toDto(User user) {
+    @Override
+    protected UserDto toDto(User user) {
         UserDto dto = new UserDto();
         UserDto.RoleUser role = new UserDto.RoleUser();
 

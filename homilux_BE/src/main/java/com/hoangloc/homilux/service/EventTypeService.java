@@ -9,7 +9,7 @@ import com.hoangloc.homilux.repository.EventTypeRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventTypeService extends AbstractPaginationService<EventType> {
+public class EventTypeService extends AbstractPaginationService<EventType, EventTypeDto> {
 
     private final EventTypeRepository eventTypeRepository;
 
@@ -57,7 +57,8 @@ public class EventTypeService extends AbstractPaginationService<EventType> {
         return toDto(eventType);
     }
 
-    private EventTypeDto toDto(EventType eventType) {
+    @Override
+    protected EventTypeDto toDto(EventType eventType) {
         EventTypeDto dto = new EventTypeDto();
         dto.setId(eventType.getId());
         dto.setName(eventType.getName());

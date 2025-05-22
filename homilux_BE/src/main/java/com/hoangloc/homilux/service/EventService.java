@@ -14,7 +14,7 @@ import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventService extends AbstractPaginationService<Event> {
+public class EventService extends AbstractPaginationService<Event, EventDto> {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final EventTypeRepository eventTypeRepository;
@@ -102,7 +102,8 @@ public class EventService extends AbstractPaginationService<Event> {
 //                .collect(Collectors.toList());
 //    }
 
-    private EventDto toDto(Event event) {
+    @Override
+    protected EventDto toDto(Event event) {
         EventDto dto = new EventDto();
         dto.setId(event.getId());
         dto.setUserId(event.getUser().getId());

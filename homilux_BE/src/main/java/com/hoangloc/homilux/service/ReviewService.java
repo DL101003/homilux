@@ -15,7 +15,7 @@ import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReviewService extends AbstractPaginationService<Review> {
+public class ReviewService extends AbstractPaginationService<Review, ReviewDto> {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -119,7 +119,8 @@ public class ReviewService extends AbstractPaginationService<Review> {
 //                .collect(Collectors.toList());
 //    }
 
-    private ReviewDto toDto(Review review) {
+    @Override
+    protected ReviewDto toDto(Review review) {
         ReviewDto dto = new ReviewDto();
         dto.setId(review.getId());
         dto.setUserId(review.getUser().getId());

@@ -9,7 +9,7 @@ import com.hoangloc.homilux.repository.DishRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DishService extends AbstractPaginationService<Dish> {
+public class DishService extends AbstractPaginationService<Dish, DishDto> {
 
     private final DishRepository dishRepository;
 
@@ -67,7 +67,8 @@ public class DishService extends AbstractPaginationService<Dish> {
 //                .collect(Collectors.toList());
 //    }
 
-    private DishDto toDto(Dish dish) {
+    @Override
+    protected DishDto toDto(Dish dish) {
         DishDto dto = new DishDto();
         dto.setId(dish.getId());
         dto.setName(dish.getName());

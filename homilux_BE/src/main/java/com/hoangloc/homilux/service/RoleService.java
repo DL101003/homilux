@@ -8,13 +8,14 @@ import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.PermissionRepository;
 import com.hoangloc.homilux.repository.RoleRepository;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleService extends AbstractPaginationService<Role> {
+public class RoleService extends AbstractPaginationService<Role, RoleDto> {
 
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
@@ -81,7 +82,8 @@ public class RoleService extends AbstractPaginationService<Role> {
         return toDto(role);
     }
 
-    private RoleDto toDto(Role role) {
+    @Override
+    protected RoleDto toDto(Role role) {
         RoleDto dto = new RoleDto();
         dto.setId(role.getId());
         dto.setName(role.getName());

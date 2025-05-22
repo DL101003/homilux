@@ -11,7 +11,7 @@ import com.hoangloc.homilux.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentService extends AbstractPaginationService<Payment> {
+public class PaymentService extends AbstractPaginationService<Payment, PaymentDto> {
 
     private final PaymentRepository paymentRepository;
     private final EventRepository eventRepository;
@@ -80,7 +80,8 @@ public class PaymentService extends AbstractPaginationService<Payment> {
 //                .collect(Collectors.toList());
 //    }
 
-    private PaymentDto toDto(Payment payment) {
+    @Override
+    protected PaymentDto toDto(Payment payment) {
         PaymentDto dto = new PaymentDto();
         dto.setId(payment.getId());
         dto.setEventId(payment.getEvent().getId());

@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public abstract class AbstractPaginationService<E> implements PaginationService<E> {
+import java.util.stream.Collectors;
+
+public abstract class AbstractPaginationService<E, D> implements PaginationService<E, D> {
 
     protected final JpaSpecificationExecutor<E> repository;
 
@@ -24,7 +26,11 @@ public abstract class AbstractPaginationService<E> implements PaginationService<
         mt.setPages(page.getTotalPages());
         mt.setTotal(page.getTotalElements());
         rs.setMeta(mt);
-        rs.setResult(page.getContent());
+        rs.setResult(page.getContent().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList()));
         return rs;
     }
+
+    protected abstract D toDto(E entity);
 }

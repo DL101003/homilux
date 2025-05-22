@@ -9,7 +9,7 @@ import com.hoangloc.homilux.repository.PermissionRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PermissionService extends AbstractPaginationService<Permission> {
+public class PermissionService extends AbstractPaginationService<Permission, PermissionDto> {
 
     private final PermissionRepository permissionRepository;
 
@@ -68,7 +68,8 @@ public class PermissionService extends AbstractPaginationService<Permission> {
         return toDto(permission);
     }
 
-    private PermissionDto toDto(Permission permission) {
+    @Override
+    protected PermissionDto toDto(Permission permission) {
         PermissionDto dto = new PermissionDto();
         dto.setId(permission.getId());
         dto.setName(permission.getName());
