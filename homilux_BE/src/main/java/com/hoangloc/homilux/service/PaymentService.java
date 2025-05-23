@@ -23,9 +23,6 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
     }
 
     public PaymentDto createPayment(Payment payment) {
-        if (paymentRepository.existsByTransactionId(payment.getTransactionId())) {
-            throw new ResourceAlreadyExistsException("Thanh toán", "mã thanh toán", payment.getTransactionId());
-        }
         Event event = eventRepository.findById(payment.getEvent().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sự kiện", "ID", payment.getEvent().getId()));
         payment.setEvent(event);
@@ -89,6 +86,9 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
         dto.setAmount(payment.getAmount());
         dto.setPaymentDate(payment.getPaymentDate());
         dto.setStatus(payment.getStatus());
+        dto.setPaymentMethod(payment.getPaymentMethod());
+        dto.setPaymentProvider(payment.getPaymentProvider());
+        dto.setPaymentUrl(payment.getPaymentUrl());
         dto.setCreatedAt(payment.getCreatedAt());
         dto.setUpdatedAt(payment.getUpdatedAt());
         return dto;

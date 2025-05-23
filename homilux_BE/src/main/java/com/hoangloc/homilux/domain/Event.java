@@ -3,8 +3,6 @@ package com.hoangloc.homilux.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hoangloc.homilux.util.LocationType;
-import com.hoangloc.homilux.util.PaymentMethod;
-import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,12 +39,6 @@ public class Event extends BaseEntity {
     private int estimatedAttendees;
     private Instant eventDate;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
-
     private LocalDate contractDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,8 +58,8 @@ public class Event extends BaseEntity {
     @JsonIgnore
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Payment> payments;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
 }

@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.List;
+
 @Entity
 @Table(name = "reviews")
 @Getter
@@ -25,13 +27,12 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dish_id")
-    private Dish dish;
-
     @Column(columnDefinition = "INT CHECK (rating >= 1 AND rating <= 5)")
     private int rating;
 
     private String comment;
+
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY)
+    private List<ReviewImage> images;
 
 }

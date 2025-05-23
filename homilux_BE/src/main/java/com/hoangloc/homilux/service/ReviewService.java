@@ -1,49 +1,71 @@
 package com.hoangloc.homilux.service;
 
 import com.hoangloc.homilux.annotation.AbstractPaginationService;
-import com.hoangloc.homilux.domain.Dish;
-import com.hoangloc.homilux.domain.Event;
-import com.hoangloc.homilux.domain.Review;
-import com.hoangloc.homilux.domain.User;
+import com.hoangloc.homilux.domain.*;
 import com.hoangloc.homilux.domain.dto.ReviewDto;
 import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
+import com.hoangloc.homilux.exception.StorageException;
 import com.hoangloc.homilux.repository.DishRepository;
 import com.hoangloc.homilux.repository.EventRepository;
 import com.hoangloc.homilux.repository.ReviewRepository;
 import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ReviewService extends AbstractPaginationService<Review, ReviewDto> {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final DishRepository dishRepository;
+    private final FileService fileService;
 
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, EventRepository eventRepository, DishRepository dishRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, EventRepository eventRepository, FileService fileService) {
         super(reviewRepository);
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
-        this.dishRepository = dishRepository;
+        this.fileService = fileService;
     }
 
-    public ReviewDto createReview(Review review) {
+    public ReviewDto createReview(Review review, MultipartFile[] files) {
         User user = userRepository.findById(review.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Người dùng", "ID", review.getUser().getId()));
         Event event = eventRepository.findById(review.getEvent().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sự kiện", "ID", review.getEvent().getId()));
-        Dish dish = dishRepository.findById(review.getDish().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", review.getDish().getId()));
 
-        if (reviewRepository.existsByUserIdAndEventIdAndDishId(user.getId(), event.getId(), dish.getId())) {
-            throw new ResourceAlreadyExistsException("Đánh giá", "userId, eventId, dishId", user.getId() + ", " + event.getId() + ", " + dish.getId());
+        if (!event.getUser().getId().equals(user.getId())) {
+            throw new IllegalStateException("Chỉ người thuê dịch vụ được phép đánh giá!");
+        }
+
+        if (event.getEventDate().isAfter(Instant.now())) {
+            throw new IllegalStateException("Chỉ có thể đánh giá sau khi sự kiện kết thúc!");
+        }
+
+        long reviewCount = reviewRepository.countByUserIdAndEventId(user.getId(), event.getId());
+        if (reviewCount >= 3) {
+            throw new IllegalStateException("Đã đạt giới hạn 3 đánh giá cho sự kiện này!");
         }
 
         review.setUser(user);
         review.setEvent(event);
-        review.setDish(dish);
+        review.setImages(new ArrayList<>());
+
+        // Upload hình ảnh
+        if (files != null && files.length > 0) {
+            List<String> uploadResults = fileService.store(List.of(files), "reviews");
+            for (String result : uploadResults) {
+                ReviewImage reviewImage = new ReviewImage();
+                reviewImage.setReview(review);
+                reviewImage.setImagePath(result);
+                review.getImages().add(reviewImage);
+            }
+        }
 
         Review savedReview = reviewRepository.save(review);
         return toDto(savedReview);
@@ -68,20 +90,13 @@ public class ReviewService extends AbstractPaginationService<Review, ReviewDto> 
             review.setEvent(event);
         }
 
-        if (updatedReview.getDish() != null) {
-            Dish dish = dishRepository.findById(updatedReview.getDish().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", updatedReview.getDish().getId()));
-            review.setDish(dish);
-        }
-
-        if (updatedReview.getUser() != null && updatedReview.getEvent() != null && updatedReview.getDish() != null) {
+        if (updatedReview.getUser() != null && updatedReview.getEvent() != null) {
             if (!review.getUser().getId().equals(updatedReview.getUser().getId()) ||
-                    !review.getEvent().getId().equals(updatedReview.getEvent().getId()) ||
-                    !review.getDish().getId().equals(updatedReview.getDish().getId())) {
-                if (reviewRepository.existsByUserIdAndEventIdAndDishId(
-                        updatedReview.getUser().getId(), updatedReview.getEvent().getId(), updatedReview.getDish().getId())) {
-                    throw new ResourceAlreadyExistsException("Đánh giá", "userId, eventId, dishId",
-                            updatedReview.getUser().getId() + ", " + updatedReview.getEvent().getId() + ", " + updatedReview.getDish().getId());
+                    !review.getEvent().getId().equals(updatedReview.getEvent().getId())) {
+                if (reviewRepository.existsByUserIdAndEventId(
+                        updatedReview.getUser().getId(), updatedReview.getEvent().getId())) {
+                    throw new ResourceAlreadyExistsException("Đánh giá", "userId, eventId",
+                            updatedReview.getUser().getId() + ", " + updatedReview.getEvent().getId());
                 }
             }
         }
@@ -125,7 +140,6 @@ public class ReviewService extends AbstractPaginationService<Review, ReviewDto> 
         dto.setId(review.getId());
         dto.setUserId(review.getUser().getId());
         dto.setEventId(review.getEvent().getId());
-        dto.setDishId(review.getDish().getId());
         dto.setRating(review.getRating());
         dto.setComment(review.getComment());
         dto.setCreatedAt(review.getCreatedAt());

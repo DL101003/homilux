@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.domain;
 
+import com.hoangloc.homilux.util.PaymentMethod;
 import com.hoangloc.homilux.util.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,8 +21,7 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
+    @OneToOne(mappedBy = "payment")
     private Event event;
 
     private String transactionId;
@@ -32,5 +32,11 @@ public class Payment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String paymentProvider; // "VNPAY", "MOMO"
+    private String paymentUrl; // URL thanh toán
 
 }

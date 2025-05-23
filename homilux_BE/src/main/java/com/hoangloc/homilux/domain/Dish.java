@@ -30,8 +30,4 @@ public class Dish extends BaseEntity {
     @JsonIgnore
     private List<Menu> menus;
 
-    @OneToMany(mappedBy = "dish", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Review> reviews;
-
 }

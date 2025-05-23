@@ -74,8 +74,6 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
         event.setCustomLocation(updatedEvent.getCustomLocation());
         event.setEstimatedAttendees(updatedEvent.getEstimatedAttendees());
         event.setEventDate(updatedEvent.getEventDate());
-        event.setPaymentMethod(updatedEvent.getPaymentMethod());
-        event.setPaymentStatus(updatedEvent.getPaymentStatus());
         event.setContractDate(updatedEvent.getContractDate());
         event.setServices(updatedEvent.getServices());
 
@@ -113,8 +111,6 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
         dto.setCustomLocation(event.getCustomLocation());
         dto.setEstimatedAttendees(event.getEstimatedAttendees());
         dto.setEventDate(event.getEventDate());
-        dto.setPaymentMethod(event.getPaymentMethod());
-        dto.setPaymentStatus(event.getPaymentStatus());
         dto.setContractDate(event.getContractDate());
         dto.setCreatedAt(event.getCreatedAt());
         dto.setUpdatedAt(event.getUpdatedAt());

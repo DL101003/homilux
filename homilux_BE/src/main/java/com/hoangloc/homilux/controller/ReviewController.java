@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class ReviewController {
     }
 
     @PostMapping("/reviews")
-    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody Review review) {
-        ReviewDto createdReview = reviewService.createReview(review);
+    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody Review review, @RequestPart(value = "files", required = false) MultipartFile[] files) {
+        ReviewDto createdReview = reviewService.createReview(review, files);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }
 

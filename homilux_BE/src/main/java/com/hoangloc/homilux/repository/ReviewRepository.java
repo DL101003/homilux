@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecificationExecutor<Review> {
     List<Review> findByEventId(Long eventId);
-    List<Review> findByDishId(Long dishId);
-    boolean existsByUserIdAndEventIdAndDishId(Long userId, Long eventId, Long dishId);
+
+    boolean existsByUserIdAndEventId(Long id, Long id1);
+
+    long countByUserIdAndEventId(Long id, Long id1);
 }
