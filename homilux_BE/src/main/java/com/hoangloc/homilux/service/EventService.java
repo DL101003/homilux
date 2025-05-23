@@ -19,13 +19,15 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
     private final UserRepository userRepository;
     private final EventTypeRepository eventTypeRepository;
     private final MenuRepository menuRepository;
+    private final EmailService emailService;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, MenuRepository menuRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, MenuRepository menuRepository, EmailService emailService) {
         super(eventRepository);
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.eventTypeRepository = eventTypeRepository;
         this.menuRepository = menuRepository;
+        this.emailService = emailService;
     }
 
     public EventDto createEvent(Event event) {
@@ -42,7 +44,16 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
         event.setMenu(menu);
 
         Event savedEvent = eventRepository.save(event);
+        sendConfirmationEmail(savedEvent);
         return toDto(savedEvent);
+    }
+
+    private void sendConfirmationEmail(Event event) {
+        String to = event.getUser().getEmail();
+        String subject = "Homilux - Xác Nhận Đăng Ký Sự Kiện";
+        String templateName = "event_confirmation";
+        String username = event.getUser().getName();
+        emailService.sendEmailFromTemplateSync(to, subject, templateName, username, event);
     }
 
     public EventDto updateEvent(Event updatedEvent) {

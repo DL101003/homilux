@@ -18,6 +18,17 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hani101003@gmail.com
+    password: rjwlulkstzmrtbhf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 homilux:
   jwt:

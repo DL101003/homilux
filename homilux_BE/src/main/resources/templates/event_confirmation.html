@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Đăng Ký Sự Kiện</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f0f2f5;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 30px auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <!-- Header -->
+    <tr>
+        <td style="background: linear-gradient(90deg, #28a745, #4CAF50); padding: 30px; text-align: center; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+            <img src="https://via.placeholder.com/150x50?text=Homilux+Logo" alt="Homilux Logo" style="max-width: 150px; margin-bottom: 10px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: bold;">Xác Nhận Đăng Ký Sự Kiện</h1>
+        </td>
+    </tr>
+    <!-- Body -->
+    <tr>
+        <td style="padding: 40px 30px;">
+            <h2 style="color: #2d3748; font-size: 22px; margin: 0 0 15px;">Kính gửi <span th:text="${name}"></span>,</h2>
+            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 25px;">
+                Cảm ơn quý khách đã tin tưởng và lựa chọn Homilux cho sự kiện đặc biệt của mình! Chúng tôi xin xác nhận đăng ký sự kiện của quý khách. Dưới đây là thông tin chi tiết:
+            </p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="12" style="background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold; width: 35%;">Loại sự kiện:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${event.eventType.name}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Ngày tổ chức:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Địa điểm:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${event.locationType == 'CUSTOM' ? event.customLocation : event.locationType}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Số khách dự kiến:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${event.estimatedAttendees}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Thực đơn:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${event.menu.name}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Dịch vụ:</td>
+                    <td style="color: #4a5568; font-size: 16px;">
+                        <span th:each="service, iterStat : ${event.services}" th:text="${service.name} + (${iterStat.last} ? '' : ', ')"></span>
+                        <span th:if="${#lists.isEmpty(event.services)}">Không có</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Trạng thái:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${event.payment.status}"></td>
+                </tr>
+                <tr>
+                    <td style="color: #2d3748; font-size: 16px; font-weight: bold;">Ngày ký hợp đồng:</td>
+                    <td style="color: #4a5568; font-size: 16px;" th:text="${#temporals.format(event.contractDate, 'dd/MM/yyyy')}"></td>
+                </tr>
+            </table>
+            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 25px 0;">
+                Chúng tôi cam kết mang đến cho quý khách một sự kiện trọn vẹn và đáng nhớ. Nếu có bất kỳ câu hỏi hoặc yêu cầu hỗ trợ, vui lòng liên hệ qua email <a href="mailto:hotro@homilux.com" style="color: #28a745; text-decoration: none; font-weight: bold;">hotro@homilux.com</a> hoặc số điện thoại <a href="tel:+84912345678" style="color: #28a745; text-decoration: none; font-weight: bold;">0912 345 678</a>.
+            </p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="text-align: center;">
+                        <a href="mailto:hotro@homilux.com" style="display: inline-block; background-color: #28a745; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 6px; margin: 10px 0;">Liên Hệ Ngay</a>
+                    </td>
+                </tr>
+            </table>
+            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0;">
+                Trân trọng,<br>
+                Đội ngũ Homilux
+            </p>
+        </td>
+    </tr>
+    <!-- Footer -->
+    <tr>
+        <td style="background: linear-gradient(90deg, #28a745, #4CAF50); padding: 20px; text-align: center; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+            <p style="color: #ffffff; font-size: 14px; margin: 0 0 10px;">
+                Theo dõi chúng tôi:
+                <a href="https://facebook.com/homilux" style="color: #ffffff; text-decoration: none; margin: 0 5px;">Facebook</a> |
+                <a href="https://instagram.com/homilux" style="color: #ffffff; text-decoration: none; margin: 0 5px;">Instagram</a>
+            </p>
+            <p style="color: #ffffff; font-size: 14px; margin: 0;">
+                © 2025 Homilux. Mọi quyền được bảo lưu.
+            </p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
