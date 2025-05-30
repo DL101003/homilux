@@ -89,12 +89,8 @@ public class UserService extends AbstractPaginationService<User, UserDto> {
         return dto;
     }
 
-    public User handleGetUserByUsername(String username) {
-        return userRepository.findByEmail(username);
-    }
-
     public void updateUserToken(String refreshToken, String username) {
-        User currentUser = handleGetUserByUsername(username);
+        User currentUser = userRepository.findByEmail(username);
         if (currentUser != null) {
             currentUser.setRefreshToken(refreshToken);
             userRepository.save(currentUser);

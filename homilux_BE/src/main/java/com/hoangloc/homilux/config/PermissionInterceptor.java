@@ -4,7 +4,7 @@ import com.hoangloc.homilux.domain.Permission;
 import com.hoangloc.homilux.domain.Role;
 import com.hoangloc.homilux.domain.User;
 import com.hoangloc.homilux.exception.PermissionException;
-import com.hoangloc.homilux.service.UserService;
+import com.hoangloc.homilux.repository.UserRepository;
 import com.hoangloc.homilux.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +18,7 @@ import java.util.List;
 public class PermissionInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     @Transactional
@@ -37,7 +37,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
 
         if (email != null && !email.isEmpty()) {
-            User user = userService.handleGetUserByUsername(email);
+            User user = userRepository.findByEmail(email);
             if (user != null) {
                 Role role = user.getRole();
                 if (role != null) {

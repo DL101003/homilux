@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hoangloc.homilux.util.AuthProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -35,6 +36,9 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(500)")
     private String refreshToken;
 
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Event> events;
@@ -46,5 +50,5 @@ public class User extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
-    
+
 }
