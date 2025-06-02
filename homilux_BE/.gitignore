@@ -37,5 +37,9 @@ out/
 .vscode/
 
 
+### Secret
+application-secret.yml
+
+
 ### Folder
 /upload

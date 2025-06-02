@@ -144,4 +144,5 @@ public class AuthService {
         UserDto user = userService.createUser(postmanUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
+
 }

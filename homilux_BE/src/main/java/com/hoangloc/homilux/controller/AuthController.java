@@ -43,4 +43,5 @@ public class AuthController {
     public ResponseEntity<UserDto> register(@Valid @RequestBody User postmanUser) {
         return authService.register(postmanUser);
     }
+
 }
