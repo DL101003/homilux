@@ -1,16 +1,11 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Login</title>
 </head>
 <body>
-<h2>Login with:</h2>
-<a href="/oauth2/authorization/google">Google</a>
-<br/>
-<a href="/oauth2/authorization/facebook">Facebook</a>
+<h1>Login</h1>
+<a th:href="@{/oauth2/authorization/google}">Login with Google</a><br>
+<a th:href="@{/oauth2/authorization/facebook}">Login with Facebook</a>
 </body>
 </html>
