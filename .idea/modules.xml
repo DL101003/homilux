@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FullStackProject.iml" filepath="$PROJECT_DIR$/.idea/FullStackProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/homilux.iml" filepath="$PROJECT_DIR$/.idea/modules/homilux.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/homilux.main.iml" filepath="$PROJECT_DIR$/.idea/modules/homilux.main.iml" />
     </modules>
   </component>

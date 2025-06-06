@@ -9,7 +9,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(SecurityUtil.getCurrentUserLogin().orElse("SYSTEM"));
+        return SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin() : Optional.empty();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hoangloc.homilux.util.AuthProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -24,13 +25,19 @@ public class User extends BaseEntity {
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    @NotBlank(message = "Password cannot be blank")
+    @Column
     private String password;
 
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
+    @Column(name = "provider_id")
+    private String providerId;
+
     private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
 
     @Column(columnDefinition = "VARCHAR(500)")
     private String refreshToken;

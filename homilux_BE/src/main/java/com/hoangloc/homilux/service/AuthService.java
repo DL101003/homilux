@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +60,32 @@ public class AuthService {
 
         String refreshToken = securityUtil.createRefreshToken(reqLoginDto.getUsername(), res);
         userService.updateUserToken(refreshToken, reqLoginDto.getUsername());
+
+        ResponseCookie resCookies = ResponseCookie
+                .from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                .body(res);
+    }
+
+    public ResponseEntity<ResLoginDto> handleOAuth2Login(OAuth2User oAuth2User, String provider) {
+        UserDto userDto = userService.saveOrUpdateOAuth2User(oAuth2User, provider);
+        ResLoginDto res = new ResLoginDto();
+        res.setId(userDto.getId());
+        res.setEmail(userDto.getEmail());
+        res.setName(userDto.getName());
+
+        String accessToken = securityUtil.createAccessToken(userDto.getEmail(), res);
+        res.setAccessToken(accessToken);
+
+        String refreshToken = securityUtil.createRefreshToken(userDto.getEmail(), res);
+        userService.updateUserToken(refreshToken, userDto.getEmail());
 
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refreshToken)

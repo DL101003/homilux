@@ -34,20 +34,18 @@ spring:
       client:
         registration:
           google:
-            client-id:
-            client-secret:
+            client-id: ${CLIENT_GOOGLE_ID}
+            client-secret: ${CLIENT_GOOGLE_SECRET}
             scope:
               - email
               - profile
           facebook:
-            client-id:
-            client-secret:
+            client-id: ${CLIENT_FACEBOOK_ID}
+            client-secret: ${CLIENT_FACEBOOK_SECRET}
             scope:
               - email
               - public_profile
         provider:
-          google:
-            issuer-uri: https://accounts.google.com
           facebook:
             authorization-uri: https://www.facebook.com/v23.0/dialog/oauth?auth_type=reauthenticate
             token-uri: https://graph.facebook.com/v23.0/oauth/access_token

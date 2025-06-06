@@ -8,7 +8,9 @@ import com.hoangloc.homilux.exception.ResourceAlreadyExistsException;
 import com.hoangloc.homilux.exception.ResourceNotFoundException;
 import com.hoangloc.homilux.repository.RoleRepository;
 import com.hoangloc.homilux.repository.UserRepository;
+import com.hoangloc.homilux.util.AuthProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +37,35 @@ public class UserService extends AbstractPaginationService<User, UserDto> {
             user.setRole(role);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+        return toDto(savedUser);
+    }
+
+    public UserDto saveOrUpdateOAuth2User(OAuth2User oAuth2User, String provider) {
+        String providerId = provider.equals("google") ? oAuth2User.getAttribute("sub") : oAuth2User.getAttribute("id");
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+
+        AuthProvider authProvider = provider.equals("google") ? AuthProvider.GOOGLE : AuthProvider.FACEBOOK;
+
+        User user = userRepository.findByEmail(email);
+
+        if (user != null) {
+            user.setName(name);
+            user.setEmail(email);
+            user.setProviderId(providerId);
+            user.setAuthProvider(authProvider);
+        }
+        user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhone(null);
+        user.setPassword(null);
+        user.setProviderId(providerId);
+        user.setAuthProvider(authProvider);
+        user.setCreatedBy(provider.toUpperCase());
+        user.setUpdatedBy(provider.toUpperCase());
+
         User savedUser = userRepository.save(user);
         return toDto(savedUser);
     }
@@ -101,7 +132,4 @@ public class UserService extends AbstractPaginationService<User, UserDto> {
         return userRepository.findByRefreshTokenAndEmail(refreshToken, email);
     }
 
-    public boolean isEmailExist(String email) {
-        return userRepository.existsByEmail(email);
-    }
 }
