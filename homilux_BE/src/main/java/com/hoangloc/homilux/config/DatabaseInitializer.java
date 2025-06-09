@@ -77,6 +77,8 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get payment by id", "/api/v1/payments/{id}", "GET", "PAYMENTS"));
             arr.add(new Permission("Update payment", "/api/v1/payments", "PUT", "PAYMENTS"));
             arr.add(new Permission("Delete payment", "/api/v1/payments/{id}", "DELETE", "PAYMENTS"));
+            arr.add(new Permission("VNPay payment", "/api/v1/payments/callback", "GET", "PAYMENTS"));
+            arr.add(new Permission("Create VNPay payment", "/api/v1/payments/create-vnpay", "POST", "PAYMENTS"));
 
             // REVIEWS permissions
             arr.add(new Permission("Create a review", "/api/v1/reviews", "POST", "REVIEWS"));

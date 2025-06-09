@@ -6,17 +6,23 @@ import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.PaymentService;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1")
 public class PaymentController {
 
     private final PaymentService paymentService;
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
@@ -30,7 +36,6 @@ public class PaymentController {
 
     @GetMapping("/payments")
     public ResponseEntity<ResultPaginationDTO> getAllPayments(@Filter Specification<Payment> spec, Pageable pageable) {
-//        List<PaymentDto> payments = paymentStatus != null ? paymentService.getPaymentsByPaymentStatus(paymentStatus) : paymentService.getAllPayments();
         return ResponseEntity.ok(paymentService.getAll(spec, pageable));
     }
 
@@ -50,5 +55,23 @@ public class PaymentController {
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/payments/create-vnpay")
+    public ResponseEntity<String> createVNPayPayment(@RequestParam Long eventId,
+                                                     @RequestHeader(value = "X-Forwarded-For", defaultValue = "127.0.0.1") String ipAddress) throws Exception {
+        String paymentUrl = paymentService.createVNPayPayment(eventId, ipAddress);
+        return ResponseEntity.ok(paymentUrl);
+    }
+
+    @GetMapping("/payments/callback")
+    public ResponseEntity<String> handleVNPayCallback(@RequestParam Map<String, String> params) throws Exception {logger.info("Callback received with params: {}", params);
+        try {
+            boolean success = paymentService.handleVNPayCallback(params);
+            return ResponseEntity.ok(success ? "SUCCESS" : "FAIL");
+        } catch (Exception e) {
+            logger.error("Callback error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
+        }
     }
 }

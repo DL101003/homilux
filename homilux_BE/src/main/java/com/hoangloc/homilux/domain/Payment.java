@@ -31,12 +31,14 @@ public class Payment extends BaseEntity {
     private Instant paymentDate;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private PaymentStatus status; // PENDING, COMPLETED
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private PaymentMethod paymentMethod; // ONLINE, POST_EVENT
 
-    private String paymentProvider; // "VNPAY", "MOMO"
-    private String paymentUrl; // URL thanh toán
+    private String paymentProvider; // VNPAY, MOMO,...
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String paymentUrl;
 
 }

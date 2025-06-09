@@ -34,20 +34,20 @@ spring:
       client:
         registration:
           google:
-            client-id: ${CLIENT_GOOGLE_ID}
-            client-secret: ${CLIENT_GOOGLE_SECRET}
+            client-id:
+            client-secret:
             scope:
               - email
               - profile
           facebook:
-            client-id: ${CLIENT_FACEBOOK_ID}
-            client-secret: ${CLIENT_FACEBOOK_SECRET}
+            client-id:
+            client-secret:
             scope:
               - email
               - public_profile
         provider:
           facebook:
-            authorization-uri: https://www.facebook.com/v23.0/dialog/oauth?auth_type=reauthenticate
+            authorization-uri: https://www.facebook.com/v23.0/dialog/oauth?auth_type
             token-uri: https://graph.facebook.com/v23.0/oauth/access_token
             user-info-uri: https://graph.facebook.com/v23.0/me?fields=id,name,email
             user-name-attribute: name
@@ -59,3 +59,9 @@ homilux:
     refresh-token-validity-in-seconds: 8640000
   upload-file:
     base-uri: file:///D:/IT/FullStackProject/upload/
+
+vnpay:
+  tmn-code: 0XSUQAMQ
+  hash-secret: 1I3JASKUXS7JHX9XOGFPJZQ0LG46HDLG
+  url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  return-url: https://e6bb-123-25-190-33.ngrok-free.app/api/v1/payments/callback
