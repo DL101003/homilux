@@ -67,7 +67,7 @@ public class HomiluxServiceService extends AbstractPaginationService<Service, Se
         if (!service.getEvents().isEmpty()) {
             throw new IllegalStateException("Không thể xóa dịch vụ đang được sử dụng bởi sự kiện!");
         }
-        serviceRepository.deleteById(id); // Triggers soft delete via @SQLDelete
+        serviceRepository.deleteById(id);
     }
 
     public ServiceDto getServiceById(Long id) {

@@ -51,7 +51,7 @@ public class DishService extends AbstractPaginationService<Dish, DishDto> {
     public void deleteDish(Long id) {
         dishRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", id));
-        dishRepository.deleteById(id); // Triggers soft delete via @SQLDelete
+        dishRepository.deleteById(id);
     }
 
     public DishDto getDishById(Long id) {
@@ -59,13 +59,6 @@ public class DishService extends AbstractPaginationService<Dish, DishDto> {
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn", "ID", id));
         return toDto(dish);
     }
-
-//    public List<DishDto> getDishesByCategory(String category) {
-//        return dishRepository.findByCategory(category)
-//                .stream()
-//                .map(this::toDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     protected DishDto toDto(Dish dish) {

@@ -38,6 +38,4 @@ public class Role extends BaseEntity {
     @JsonIgnore
     List<User> users;
 
-    private boolean deleted = false;
-
 }

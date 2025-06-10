@@ -33,7 +33,7 @@ public class Event extends BaseEntity {
     private EventType eventType;
 
     @Enumerated(EnumType.STRING)
-    private LocationType locationType;
+    private LocationType locationType; // RESTAURANT, CUSTOM
 
     private String customLocation;
     private int estimatedAttendees;

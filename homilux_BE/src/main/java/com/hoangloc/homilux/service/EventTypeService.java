@@ -48,7 +48,7 @@ public class EventTypeService extends AbstractPaginationService<EventType, Event
     public void deleteEventType(Long id) {
         eventTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Loại sự kiện", "ID", id));
-        eventTypeRepository.deleteById(id); // Triggers soft delete via @SQLDelete
+        eventTypeRepository.deleteById(id);
     }
 
     public EventTypeDto getEventTypeById(Long id) {

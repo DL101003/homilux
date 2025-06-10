@@ -108,7 +108,7 @@ public class ReviewService extends AbstractPaginationService<Review, ReviewDto> 
     public void deleteReview(Long id) {
         reviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá", "ID", id));
-        reviewRepository.deleteById(id); // Triggers soft delete via @SQLDelete
+        reviewRepository.deleteById(id);
     }
 
     public ReviewDto getReviewById(Long id) {
@@ -116,20 +116,6 @@ public class ReviewService extends AbstractPaginationService<Review, ReviewDto> 
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá", "ID", id));
         return toDto(review);
     }
-
-//    public List<ReviewDto> getReviewsByEventId(Long eventId) {
-//        return reviewRepository.findByEventId(eventId)
-//                .stream()
-//                .map(this::toDto)
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<ReviewDto> getReviewsByDishId(Long dishId) {
-//        return reviewRepository.findByDishId(dishId)
-//                .stream()
-//                .map(this::toDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     protected ReviewDto toDto(Review review) {

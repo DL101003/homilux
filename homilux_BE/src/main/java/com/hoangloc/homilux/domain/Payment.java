@@ -36,7 +36,7 @@ public class Payment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod; // ONLINE, POST_EVENT
 
-    private String paymentProvider; // VNPAY, MOMO,...
+    private String paymentProvider;
 
     @Column(columnDefinition = "MEDIUMTEXT")
     private String paymentUrl;
