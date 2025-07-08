@@ -25,7 +25,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: hani101003@gmail.com
-    password: rjwlulkstzmrtbhf
+    password: rduxvxmypibtckac
     properties:
       mail:
         smtp:
@@ -42,24 +42,12 @@ spring:
             scope:
               - email
               - profile
-          facebook:
-            client-id:
-            client-secret:
-            scope:
-              - email
-              - public_profile
-        provider:
-          facebook:
-            authorization-uri: https://www.facebook.com/v23.0/dialog/oauth?auth_type
-            token-uri: https://graph.facebook.com/v23.0/oauth/access_token
-            user-info-uri: https://graph.facebook.com/v23.0/me?fields=id,name,email
-            user-name-attribute: name
 
 homilux:
   jwt:
     base64-secret: qoAEABDke07+AVLepXB4aCMtsT0wMAqR5x2VFyldsnx6e75YQkJH2UcZKTjEyoNgG71SBCXfq5N6NVZxWOfsHQ==
-    access-token-validity-in-seconds: 8640000
-    refresh-token-validity-in-seconds: 8640000
+    access-token-expiration-minutes: 15
+    refresh-token-expiration-days: 7
   upload-file:
     base-uri: file:///D:/IT/FullStackProject/upload/
 

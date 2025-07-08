@@ -1,6 +1,6 @@
 package com.hoangloc.homilux.annotation;
 
-import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
+import com.hoangloc.homilux.dtos.ResultPaginationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,20 +17,20 @@ public abstract class AbstractPaginationService<E, D> implements PaginationServi
     }
 
     @Override
-    public ResultPaginationDTO getAll(Specification<E> spec, Pageable pageable) {
+    public ResultPaginationDto getAll(Specification<E> spec, Pageable pageable) {
         Page<E> page = repository.findAll(spec, pageable);
-        ResultPaginationDTO rs = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
-        mt.setPage(pageable.getPageNumber() + 1);
-        mt.setPageSize(pageable.getPageSize());
-        mt.setPages(page.getTotalPages());
-        mt.setTotal(page.getTotalElements());
-        rs.setMeta(mt);
-        rs.setResult(page.getContent().stream()
-                .map(this::toDto)
-                .collect(Collectors.toList()));
-        return rs;
+        return new ResultPaginationDto(
+                new ResultPaginationDto.Meta(
+                        pageable.getPageNumber() + 1,
+                        pageable.getPageSize(),
+                        page.getTotalPages(),
+                        page.getTotalElements()
+                ),
+                page.getContent().stream()
+                        .map(this::toResponse)
+                        .collect(Collectors.toList())
+        );
     }
 
-    protected abstract D toDto(E entity);
+    protected abstract D toResponse(E entity);
 }

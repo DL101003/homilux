@@ -1,11 +1,11 @@
 package com.hoangloc.homilux.config;
 
-import com.hoangloc.homilux.domain.Permission;
-import com.hoangloc.homilux.domain.Role;
-import com.hoangloc.homilux.domain.User;
-import com.hoangloc.homilux.exception.PermissionException;
-import com.hoangloc.homilux.repository.UserRepository;
-import com.hoangloc.homilux.util.SecurityUtil;
+import com.hoangloc.homilux.entities.Permission;
+import com.hoangloc.homilux.entities.Role;
+import com.hoangloc.homilux.entities.User;
+import com.hoangloc.homilux.exceptions.PermissionException;
+import com.hoangloc.homilux.repositories.UserRepository;
+import com.hoangloc.homilux.services.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +34,25 @@ public class PermissionInterceptor implements HandlerInterceptor {
         System.out.println(">>> httpMethod= " + httpMethod);
         System.out.println(">>> requestURI= " + requestURI);
 
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
+        String email = SecurityUtil.getCurrentUser();
 
         if (email != null && !email.isEmpty()) {
-            User user = userRepository.findByEmail(email);
-            if (user != null) {
-                Role role = user.getRole();
-                if (role != null) {
-                    List<Permission> permissions = role.getPermissions();
-                    boolean isAllow = permissions.stream().anyMatch(item ->
-                            item.getApiPath().equals(path) && item.getMethod().equals(httpMethod));
-                    if (!isAllow) {
-                        throw new PermissionException("Bạn không có quyền truy cập vào api: " + path + " với phương thức: " + httpMethod + " . Vui lòng liên hệ admin để được hỗ trợ.");
-                    }
-                } else {
-                    throw new PermissionException("Vai trò người dùng không hợp lệ");
-                }
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new PermissionException("User not found"));
+
+            Role role = user.getRole();
+            if (role == null) {
+                throw new PermissionException("User role not found");
+            }
+
+            List<Permission> permissions = role.getPermissions();
+            boolean isAllow = permissions.stream().anyMatch(item ->
+                    item.getApiPath().equals(path) &&
+                            item.getMethod().name().equals(httpMethod));
+
+            if (!isAllow) {
+                throw new PermissionException("You don't have permission to access API: " + path +
+                        " with method: " + httpMethod + ". Please contact admin for support.");
             }
         }
 
