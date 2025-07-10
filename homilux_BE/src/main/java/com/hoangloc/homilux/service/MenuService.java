@@ -73,7 +73,7 @@ public class MenuService extends AbstractPaginationService<Menu, MenuDto> {
         if (!menu.getEvents().isEmpty()) {
             throw new IllegalStateException("Không thể xóa thực đơn đang được sử dụng bởi sự kiện!");
         }
-        menuRepository.deleteById(id);
+        menuRepository.deleteById(id); // Triggers soft delete via @SQLDelete
     }
 
     public MenuDto getMenuById(Long id) {

@@ -55,18 +55,16 @@ public class UserService extends AbstractPaginationService<User, UserDto> {
             user.setEmail(email);
             user.setProviderId(providerId);
             user.setAuthProvider(authProvider);
-            user.setUpdatedBy(provider.toUpperCase());
-        } else {
-            user = new User();
-            user.setName(name);
-            user.setEmail(email);
-            user.setPhone(null);
-            user.setPassword(null);
-            user.setProviderId(providerId);
-            user.setAuthProvider(authProvider);
-            user.setCreatedBy(provider.toUpperCase());
-            user.setUpdatedBy(provider.toUpperCase());
         }
+        user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhone(null);
+        user.setPassword(null);
+        user.setProviderId(providerId);
+        user.setAuthProvider(authProvider);
+        user.setCreatedBy(provider.toUpperCase());
+        user.setUpdatedBy(provider.toUpperCase());
 
         User savedUser = userRepository.save(user);
         return toDto(savedUser);

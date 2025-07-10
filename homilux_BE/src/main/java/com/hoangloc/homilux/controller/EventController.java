@@ -30,6 +30,7 @@ public class EventController {
 
     @GetMapping("/events")
     public ResponseEntity<ResultPaginationDTO> getAllEvents(@Filter Specification<Event> spec, Pageable pageable) {
+//        List<EventDto> events = paymentStatus != null ? eventService.getEventsByPaymentStatus(paymentStatus) : eventService.getAllEvents();
         return ResponseEntity.ok(eventService.getAll(spec, pageable));
     }
 
@@ -50,5 +51,4 @@ public class EventController {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
-
 }

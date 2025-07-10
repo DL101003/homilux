@@ -6,6 +6,8 @@ import com.hoangloc.homilux.domain.dto.ResultPaginationDTO;
 import com.hoangloc.homilux.service.PaymentService;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
@@ -62,11 +65,12 @@ public class PaymentController {
     }
 
     @GetMapping("/payments/callback")
-    public ResponseEntity<String> handleVNPayCallback(@RequestParam Map<String, String> params) throws Exception {
+    public ResponseEntity<String> handleVNPayCallback(@RequestParam Map<String, String> params) throws Exception {logger.info("Callback received with params: {}", params);
         try {
             boolean success = paymentService.handleVNPayCallback(params);
             return ResponseEntity.ok(success ? "SUCCESS" : "FAIL");
         } catch (Exception e) {
+            logger.error("Callback error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
         }
     }

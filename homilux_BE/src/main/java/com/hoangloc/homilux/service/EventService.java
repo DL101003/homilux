@@ -104,6 +104,13 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
         return toDto(event);
     }
 
+//    public List<EventDto> getEventsByPaymentStatus(PaymentStatus paymentStatus) {
+//        return eventRepository.findByPaymentStatus(paymentStatus)
+//                .stream()
+//                .map(this::toDto)
+//                .collect(Collectors.toList());
+//    }
+
     @Override
     protected EventDto toDto(Event event) {
         EventDto dto = new EventDto();
@@ -120,5 +127,4 @@ public class EventService extends AbstractPaginationService<Event, EventDto> {
         dto.setUpdatedAt(event.getUpdatedAt());
         return dto;
     }
-
 }

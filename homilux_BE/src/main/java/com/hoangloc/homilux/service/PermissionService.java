@@ -59,7 +59,7 @@ public class PermissionService extends AbstractPaginationService<Permission, Per
     public void deletePermission(Long id) {
         permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quyền", "ID", id));
-        permissionRepository.deleteById(id);
+        permissionRepository.deleteById(id); // Triggers soft delete via @SQLDelete
     }
 
     public PermissionDto getPermissionById(Long id) {

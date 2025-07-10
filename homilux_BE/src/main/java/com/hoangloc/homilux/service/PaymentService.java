@@ -12,6 +12,8 @@ import com.hoangloc.homilux.repository.EventRepository;
 import com.hoangloc.homilux.repository.PaymentRepository;
 import com.hoangloc.homilux.util.PaymentMethod;
 import com.hoangloc.homilux.util.PaymentStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,6 +31,7 @@ import java.util.TreeMap;
 @Service
 public class PaymentService extends AbstractPaginationService<Payment, PaymentDto> {
 
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final PaymentRepository paymentRepository;
     private final EventRepository eventRepository;
     private final VNPayConfig vnPayConfig;
@@ -78,7 +82,7 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
     public void deletePayment(Long id) {
         paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "ID", id));
-        paymentRepository.deleteById(id);
+        paymentRepository.deleteById(id); // Triggers soft delete via @SQLDelete
     }
 
     public PaymentDto getPaymentById(Long id) {
@@ -149,6 +153,9 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
         payment.setPaymentUrl(paymentUrl);
         paymentRepository.save(payment);
 
+        logger.info("Checksum input data: {}", hashData);
+        logger.info("Generated checksum: {}", checksum);
+        logger.info("VNPay payment URL created: {}", paymentUrl);
         return paymentUrl;
     }
 
@@ -156,6 +163,7 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
     public boolean handleVNPayCallback(Map<String, String> params) throws Exception {
         String vnpSecureHash = params.remove("vnp_SecureHash");
         if (vnpSecureHash == null) {
+            logger.error("Missing vnp_SecureHash in callback");
             return false;
         }
 
@@ -163,6 +171,7 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
                 .map(entry -> entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.US_ASCII))
                 .reduce((a, b) -> a + "&" + b).orElse(""));
         if (!vnpSecureHash.equals(calculatedChecksum)) {
+            logger.error("Invalid checksum for transaction: {}", params.get("vnp_TxnRef"));
             return false;
         }
 
@@ -171,6 +180,7 @@ public class PaymentService extends AbstractPaginationService<Payment, PaymentDt
                 .orElseThrow(() -> new ResourceNotFoundException("Thanh toán", "transactionId", transactionId));
         payment.setStatus("00".equals(params.get("vnp_ResponseCode")) ? PaymentStatus.COMPLETED : PaymentStatus.FAILED);
         paymentRepository.save(payment);
+        logger.info("Payment {} updated to status: {}", transactionId, payment.getStatus());
         return true;
     }
 

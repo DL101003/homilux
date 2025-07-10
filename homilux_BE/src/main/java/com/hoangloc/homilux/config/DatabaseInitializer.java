@@ -7,6 +7,7 @@ import com.hoangloc.homilux.repository.PermissionRepository;
 import com.hoangloc.homilux.repository.RoleRepository;
 import com.hoangloc.homilux.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

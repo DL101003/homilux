@@ -31,6 +31,14 @@ public class ReviewController {
 
     @GetMapping("/reviews")
     public ResponseEntity<ResultPaginationDTO> getAllReviews(@Filter Specification<Review> spec, Pageable pageable) {
+//        List<ReviewDto> reviews;
+//        if (eventId != null) {
+//            reviews = reviewService.getReviewsByEventId(eventId);
+//        } else if (dishId != null) {
+//            reviews = reviewService.getReviewsByDishId(dishId);
+//        } else {
+//            reviews = reviewService.getAllReviews();
+//        }
         return ResponseEntity.ok(reviewService.getAll(spec, pageable));
     }
 

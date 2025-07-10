@@ -72,7 +72,7 @@ public class RoleService extends AbstractPaginationService<Role, RoleDto> {
         if (!role.getUsers().isEmpty()) {
             throw new IllegalStateException("Không thể xóa vai trò đang được sử dụng bởi người dùng!");
         }
-        roleRepository.deleteById(id);
+        roleRepository.deleteById(id); // Triggers soft delete via @SQLDelete
     }
 
     public RoleDto getRoleById(Long id) {

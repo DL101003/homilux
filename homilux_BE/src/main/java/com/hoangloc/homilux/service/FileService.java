@@ -44,6 +44,8 @@ public class FileService {
             throw new StorageException("Không có file nào được thêm vào");
         }
 
+//        createDirectory(folder);
+
         return files.stream()
                 .map(file -> {
                     try {
