@@ -26,7 +26,7 @@ public class FileController {
             @RequestParam("folder") String folder) throws StorageException {
 
         if (files == null || files.length == 0) {
-            throw new StorageException("Không có file nào được thêm vào");
+            throw new StorageException("No files were uploaded. Please try again.");
         }
 
         List<String> uploadResults = fileService.store(List.of(files), folder);

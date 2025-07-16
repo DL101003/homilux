@@ -6,6 +6,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final SecurityUtil securityUtil; // Giả sử bạn có class này để tạo token
     private final UserService userService;
+    @Value("${homilux.jwt.refresh-token-expiration-days}")
+    private long refreshTokenExpiration;
+
 
 //    @Value("${app.oauth2.redirectUri}") // Thêm vào application.yml: app.oauth2.redirectUri=http://localhost:3000/oauth2/redirect
 //    private String redirectUri;
@@ -40,10 +46,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // 3. Xóa các thuộc tính không cần thiết để dọn dẹp session
         clearAuthenticationAttributes(request);
 
-        // 4. Xây dựng URL chuyển hướng với CẢ HAI token
+        ResponseCookie resCookies = ResponseCookie
+                .from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, resCookies.toString());
+
+        // 4. Xây dựng URL chuyển hướng với access token
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth2/redirect")
                 .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
 
         // 5. Thực hiện chuyển hướng

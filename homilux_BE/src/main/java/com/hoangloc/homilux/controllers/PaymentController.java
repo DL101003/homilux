@@ -42,9 +42,9 @@ public class PaymentController {
     }
 
     @PostMapping("/payments/create-vnpay")
-    public ResponseEntity<String> createVNPayPayment(@RequestParam Long eventId,
+    public ResponseEntity<String> createVNPayPayment(@RequestParam Long bookingId,
                                                      @RequestHeader(value = "X-Forwarded-For", defaultValue = "127.0.0.1") String ipAddress) throws Exception {
-        String paymentUrl = paymentService.createVNPayPayment(eventId, ipAddress);
+        String paymentUrl = paymentService.createVNPayPayment(bookingId, ipAddress);
         return ResponseEntity.ok(paymentUrl);
     }
 

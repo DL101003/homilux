@@ -13,10 +13,13 @@ public class CustomOAuth2User implements OAuth2User {
 
     private final User user;
     private final Map<String, Object> attributes;
+    private final String roleName;
 
     public CustomOAuth2User(User user, Map<String, Object> attributes) {
         this.user = user;
         this.attributes = attributes;
+        // Store the role name during construction to avoid lazy loading issues
+        this.roleName = user.getRole() != null ? user.getRole().getName() : "USER";
     }
 
     @Override
@@ -26,12 +29,11 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
     }
 
     @Override
     public String getName() {
         return user.getEmail();
     }
-
 }
