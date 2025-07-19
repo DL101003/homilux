@@ -3,11 +3,9 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-interface MyRouterContext {
+export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
-}
-
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+}>()({
   component: () => (
     <>
       <Outlet />
