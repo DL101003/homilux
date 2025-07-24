@@ -1,9 +1,6 @@
 package com.hoangloc.homilux.controllers;
 
-import com.hoangloc.homilux.dtos.authDto.LoginRequest;
-import com.hoangloc.homilux.dtos.authDto.LoginResponse;
-import com.hoangloc.homilux.dtos.authDto.RefreshTokenResponse;
-import com.hoangloc.homilux.dtos.authDto.RegisterRequest;
+import com.hoangloc.homilux.dtos.authDto.*;
 import com.hoangloc.homilux.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,11 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<RefreshTokenResponse> refresh(@CookieValue(name = "refresh_token") String refreshToken) {
         return authService.refreshToken(refreshToken);
+    }
+
+    @GetMapping("/account")
+    public ResponseEntity<FetchAccount> getAccount() {
+        return authService.getAccount();
     }
 
     @PostMapping("/logout")

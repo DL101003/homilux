@@ -2,10 +2,12 @@ package com.hoangloc.homilux.services;
 
 import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.dtos.authDto.RegisterRequest;
+import com.hoangloc.homilux.dtos.userDto.ChangePasswordRequest;
 import com.hoangloc.homilux.dtos.userDto.UserResponse;
 import com.hoangloc.homilux.entities.Role;
 import com.hoangloc.homilux.entities.User;
 import com.hoangloc.homilux.exceptions.DuplicateResourceException;
+import com.hoangloc.homilux.exceptions.InvalidRequestException;
 import com.hoangloc.homilux.exceptions.ResourceNotFoundException;
 import com.hoangloc.homilux.repositories.RoleRepository;
 import com.hoangloc.homilux.repositories.UserRepository;
@@ -108,4 +110,21 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
         );
     }
 
+    @Transactional
+    public void changeCurrentUserPassword(ChangePasswordRequest request) {
+        // Lấy user đang đăng nhập từ security context
+        String currentUsername = SecurityUtil.getCurrentUser();
+
+        User currentUser = userRepository.findByEmail(currentUsername) // hoặc findByUsername
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Kiểm tra mật khẩu cũ có khớp không
+        if (!passwordEncoder.matches(request.oldPassword(), currentUser.getPassword())) {
+            throw new InvalidRequestException("Incorrect old password.");
+        }
+
+        // Mã hóa và cập nhật mật khẩu mới
+        currentUser.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(currentUser);
+    }
 }

@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.entities.enums.HttpMethod;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,5 +38,6 @@ public class Permission {
     private String module;
 
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Role> roles;
 }

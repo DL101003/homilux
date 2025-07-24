@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.entities.enums.AuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,8 +44,10 @@ public class User extends BaseEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Booking> bookings;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Review> reviews;
 }

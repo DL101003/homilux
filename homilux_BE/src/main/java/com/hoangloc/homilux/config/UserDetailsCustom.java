@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ public class UserDetailsCustom implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         var user = userRepository.findByEmail(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: " + username));
@@ -28,7 +29,7 @@ public class UserDetailsCustom implements UserDetailsService {
         return new User(
                 user.getEmail(),
                 user.getPassword(),
-                Set.of(new SimpleGrantedAuthority("ROLE_USER"))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
 

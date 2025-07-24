@@ -12,7 +12,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -20,14 +19,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final SecurityUtil securityUtil; // Giả sử bạn có class này để tạo token
+    private final SecurityUtil securityUtil;
     private final UserService userService;
     @Value("${homilux.jwt.refresh-token-expiration-days}")
     private long refreshTokenExpiration;
-
-
-//    @Value("${app.oauth2.redirectUri}") // Thêm vào application.yml: app.oauth2.redirectUri=http://localhost:3000/oauth2/redirect
-//    private String redirectUri;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -37,8 +32,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        // 2. Tạo cặp Access Token và Refresh Token
-        String accessToken = securityUtil.generateAccessToken(authentication);
+        // 2. Tạo Refresh Token
+//        String accessToken = securityUtil.generateAccessToken(authentication);
         String refreshToken = securityUtil.generateRefreshToken(authentication);
 
         userService.saveRefreshToken(refreshToken, authentication.getName());
@@ -57,9 +52,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.addHeader(HttpHeaders.SET_COOKIE, resCookies.toString());
 
         // 4. Xây dựng URL chuyển hướng với access token
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth2/redirect")
-                .queryParam("accessToken", accessToken)
-                .build().toUriString();
+        String targetUrl = "http://localhost:3000/oauth2/redirect";
 
         // 5. Thực hiện chuyển hướng
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

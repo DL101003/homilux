@@ -6,6 +6,6 @@ public record PermissionResponse(
         Long id,
         String name,
         String apiPath,
-        HttpMethod method,
+        String method,
         String module
 ) {}

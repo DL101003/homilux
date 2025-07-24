@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.entities.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,5 +36,6 @@ public class RentalService {
     private boolean isCustomizable;
 
     @OneToMany(mappedBy = "rentalService")
+    @JsonIgnore
     private Set<BookingRentalService> bookingRentalServices;
 }

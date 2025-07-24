@@ -33,10 +33,13 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(accessTokenExpirationMinutes, ChronoUnit.MINUTES);
 
+        String username = authentication.getName();
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
-                .subject(authentication.getName())
+                .subject(username)
+                .claim("username", username)
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

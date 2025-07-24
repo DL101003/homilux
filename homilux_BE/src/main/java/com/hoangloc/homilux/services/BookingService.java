@@ -1,6 +1,7 @@
 package com.hoangloc.homilux.services;
 
 import com.hoangloc.homilux.annotation.AbstractPaginationService;
+import com.hoangloc.homilux.dtos.ResultPaginationDto;
 import com.hoangloc.homilux.dtos.bookingDto.BookedServiceRequest;
 import com.hoangloc.homilux.dtos.bookingDto.BookedServiceResponse;
 import com.hoangloc.homilux.dtos.bookingDto.BookingCreationRequest;
@@ -15,6 +16,8 @@ import com.hoangloc.homilux.repositories.EventTypeRepository;
 import com.hoangloc.homilux.repositories.RentalServiceRepository;
 import com.hoangloc.homilux.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,5 +181,30 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
         bookingRepository.delete(booking);
+    }
+
+    public ResultPaginationDto getBookingsForCurrentUser(Pageable pageable) {
+        String currentUsername = SecurityUtil.getCurrentUser();
+
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Page<Booking> bookingPage = bookingRepository.findByUser(currentUser, pageable);
+
+        // Chuyển đổi Page<Booking> thành ResultPaginationDto
+        // (Bạn có thể đã có logic này ở chỗ khác, đây là ví dụ)
+        // Giả sử bạn có BookingDto
+        List<BookingResponse> bookingDtos = bookingPage.getContent().stream()
+                .map(this::toResponse) // một phương thức chuyển đổi
+                .collect(Collectors.toList());
+
+        ResultPaginationDto.Meta meta = new ResultPaginationDto.Meta(
+                bookingPage.getNumber(),
+                bookingPage.getSize(),
+                bookingPage.getTotalPages(),
+                bookingPage.getTotalElements()
+        );
+
+        return new ResultPaginationDto(meta, bookingDtos);
     }
 }

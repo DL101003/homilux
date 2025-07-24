@@ -1,5 +1,7 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,7 @@ public class Role {
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("roles")
     @JoinTable(
             name = "role_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
@@ -29,5 +32,6 @@ public class Role {
     private List<Permission> permissions;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<User> users;
 }

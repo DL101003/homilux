@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -36,5 +37,6 @@ public class Review extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<ReviewImage> images;
 }

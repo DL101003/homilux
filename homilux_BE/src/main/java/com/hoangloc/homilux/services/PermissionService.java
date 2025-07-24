@@ -26,7 +26,7 @@ public class PermissionService {
                 permission.getId(),
                 permission.getName(),
                 permission.getApiPath(),
-                permission.getMethod(),
+                permission.getMethod().toString(),
                 permission.getModule()
         );
     }

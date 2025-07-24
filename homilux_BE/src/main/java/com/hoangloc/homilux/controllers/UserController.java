@@ -2,6 +2,7 @@ package com.hoangloc.homilux.controllers;
 
 import com.hoangloc.homilux.dtos.ResultPaginationDto;
 import com.hoangloc.homilux.dtos.authDto.RegisterRequest;
+import com.hoangloc.homilux.dtos.userDto.ChangePasswordRequest;
 import com.hoangloc.homilux.dtos.userDto.UserResponse;
 import com.hoangloc.homilux.entities.User;
 import com.hoangloc.homilux.services.UserService;
@@ -20,6 +21,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    @PostMapping("/me/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        userService.changeCurrentUserPassword(request);
+        return ResponseEntity.ok("Password changed successfully.");
+    }
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody RegisterRequest request) {

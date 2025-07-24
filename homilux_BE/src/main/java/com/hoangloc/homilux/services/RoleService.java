@@ -121,7 +121,7 @@ public class RoleService {
                         permission.getId(),
                         permission.getName(),
                         permission.getApiPath(),
-                        permission.getMethod(),
+                        permission.getMethod().toString(),
                         permission.getModule()))
                 .toList();
 

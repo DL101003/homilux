@@ -1,4 +1,6 @@
 package com.hoangloc.homilux.dtos.userDto;
 
-public class ChangePasswordRequest {
-}
+public record ChangePasswordRequest(
+        String oldPassword,
+        String newPassword
+) {}

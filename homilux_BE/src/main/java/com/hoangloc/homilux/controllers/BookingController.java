@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
@@ -29,6 +27,11 @@ public class BookingController {
     private final BookingService bookingService;
 
     private final UserRepository userRepository;
+
+    @GetMapping("/me")
+    public ResponseEntity<ResultPaginationDto> getMyBookings(Pageable pageable) {
+        return ResponseEntity.ok(bookingService.getBookingsForCurrentUser(pageable));
+    }
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody @Valid BookingCreationRequest request) {

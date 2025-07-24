@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoangloc.homilux.entities.enums.BookingStatus;
 import com.hoangloc.homilux.entities.enums.LocationType;
 import jakarta.persistence.*;
@@ -65,9 +66,11 @@ public class Booking extends BaseEntity {
     private EventType eventType;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<BookingRentalService> bookedRentalServices;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Payment> payments;
 
     @OneToOne(mappedBy = "booking")
