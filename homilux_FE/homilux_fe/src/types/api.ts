@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentUser"];
+        put: operations["updateCurrentUser"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/services/{id}": {
         parameters: {
             query?: never;
@@ -78,6 +94,22 @@ export interface paths {
         get: operations["getAllUsers"];
         put?: never;
         post: operations["createUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["changePassword"];
         delete?: never;
         options?: never;
         head?: never;
@@ -372,17 +404,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/bookings/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMyBookings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         RegisterRequest: {
-            fullName: string;
-            email: string;
-            password: string;
+            fullName?: string;
+            email?: string;
+            password?: string;
             phoneNumber?: string;
             /** Format: int64 */
-            roleId: number;
+            roleId?: number;
         };
         UserResponse: {
             /** Format: int64 */
@@ -423,8 +487,7 @@ export interface components {
             id?: number;
             name?: string;
             apiPath?: string;
-            /** @enum {string} */
-            method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+            method?: string;
             module?: string;
         };
         RoleResponse: {
@@ -440,6 +503,10 @@ export interface components {
             /** Format: int64 */
             id?: number;
             name?: string;
+        };
+        ChangePasswordRequest: {
+            oldPassword?: string;
+            newPassword?: string;
         };
         UploadFileDto: {
             name?: string;
@@ -541,7 +608,7 @@ export interface components {
             notes?: string;
         };
         RefreshTokenResponse: {
-            accessToken?: string;
+            access_token?: string;
         };
         LoginRequest: {
             email: string;
@@ -549,12 +616,11 @@ export interface components {
         };
         LoginResponse: {
             access_token?: string;
-            refresh_token?: string;
+            /** Format: int64 */
+            id?: number;
             email?: string;
             fullName?: string;
-            /** Format: int64 */
-            roleId?: number;
-            roleName?: string;
+            role?: components["schemas"]["RoleResponse"];
         };
         BookingStatusUpdateRequest: {
             /** @enum {string} */
@@ -584,6 +650,13 @@ export interface components {
         };
         SpecificationReview: unknown;
         SpecificationBooking: unknown;
+        FetchAccount: {
+            /** Format: int64 */
+            id?: number;
+            email?: string;
+            fullName?: string;
+            role?: components["schemas"]["RoleResponse"];
+        };
     };
     responses: never;
     parameters: never;
@@ -658,6 +731,50 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    getCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    updateCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserResponse"];
+                };
             };
         };
     };
@@ -908,6 +1025,30 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
                 };
             };
         };
@@ -1499,6 +1640,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    getMyBookings: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ResultPaginationDto"];
+                };
+            };
+        };
+    };
+    getAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FetchAccount"];
+                };
             };
         };
     };
