@@ -1,3 +1,5 @@
 package com.hoangloc.homilux.dtos.authDto;
 
-public record RefreshTokenResponse(String accessToken) {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record RefreshTokenResponse(@JsonProperty("access_token") String accessToken) {}

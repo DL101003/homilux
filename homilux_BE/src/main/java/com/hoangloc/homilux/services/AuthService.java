@@ -25,7 +25,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,6 @@ public class AuthService {
     private final SecurityUtil securityUtil;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtDecoder jwtDecoder;
     private final UserDetailsService userDetailsService;
@@ -68,13 +67,19 @@ public class AuthService {
 
         userService.saveRefreshToken(refreshToken, request.email());
 
-        User currentUser = userRepository.findByEmail(request.email()).get();
+        User currentUser = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User", request.email()));
+        LoginResponse loginResponse;
 
-        List<PermissionResponse> permissionResponses = currentUser.getRole().getPermissions().stream()
-                .map(p -> new PermissionResponse(p.getId(), p.getName(), p.getApiPath(), p.getMethod().toString(), p.getModule()))
-                .toList();
-        RoleResponse roleResponse = new RoleResponse(currentUser.getRole().getId(), currentUser.getRole().getName(), permissionResponses);
-        LoginResponse loginResponse = new LoginResponse(accessToken, currentUser.getId(), currentUser.getEmail(), currentUser.getFullName(), roleResponse);
+        if (currentUser.getRole() != null) {
+            List<PermissionResponse> permissionResponses = currentUser.getRole().getPermissions().stream()
+                    .map(p -> new PermissionResponse(p.getId(), p.getName(), p.getApiPath(), p.getMethod().toString(), p.getModule()))
+                    .toList();
+            RoleResponse roleResponse = new RoleResponse(currentUser.getRole().getId(), currentUser.getRole().getName(), permissionResponses);
+            loginResponse = new LoginResponse(accessToken, currentUser.getId(), currentUser.getEmail(), currentUser.getFullName(), roleResponse);
+        } else {
+            loginResponse = new LoginResponse(accessToken, currentUser.getId(), currentUser.getEmail(), currentUser.getFullName(), null);
+        }
 
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refreshToken)
@@ -113,14 +118,11 @@ public class AuthService {
             throw new DuplicateResourceException("Email already in use");
         }
 
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new ResourceNotFoundException("Role", "USER"));
-
         User newUser = User.builder()
                 .fullName(request.fullName())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(userRole)
+                .phoneNumber(request.phoneNumber() == null ? "" : request.phoneNumber())
                 .build();
         userRepository.save(newUser);
     }
@@ -131,10 +133,14 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", email));
 
-        List<PermissionResponse> permissionResponses = user.getRole().getPermissions().stream()
-                .map(p -> new PermissionResponse(p.getId(), p.getName(), p.getApiPath(), p.getMethod().toString(), p.getModule()))
-                .toList();
-        RoleResponse roleResponse = new RoleResponse(user.getRole().getId(), user.getRole().getName(), permissionResponses);
-        return ResponseEntity.ok(new FetchAccount(user.getId(), user.getEmail(), user.getFullName(), roleResponse));
+        if (user.getRole() != null) {
+            List<PermissionResponse> permissionResponses = user.getRole().getPermissions().stream()
+                    .map(p -> new PermissionResponse(p.getId(), p.getName(), p.getApiPath(), p.getMethod().toString(), p.getModule()))
+                    .toList();
+            RoleResponse roleResponse = new RoleResponse(user.getRole().getId(), user.getRole().getName(), permissionResponses);
+            return ResponseEntity.ok(new FetchAccount(user.getId(), user.getEmail(), user.getFullName(), roleResponse));
+        }
+        return ResponseEntity.ok(new FetchAccount(user.getId(), user.getEmail(), user.getFullName(), null));
     }
+
 }

@@ -5,6 +5,7 @@ import com.hoangloc.homilux.dtos.authDto.RegisterRequest;
 import com.hoangloc.homilux.dtos.userDto.ChangePasswordRequest;
 import com.hoangloc.homilux.dtos.userDto.UserResponse;
 import com.hoangloc.homilux.entities.User;
+import com.hoangloc.homilux.services.SecurityUtil;
 import com.hoangloc.homilux.services.UserService;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
@@ -26,6 +27,19 @@ public class UserController {
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         userService.changeCurrentUserPassword(request);
         return ResponseEntity.ok("Password changed successfully.");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        String email = SecurityUtil.getCurrentUser();
+        return ResponseEntity.ok(userService.getUserLogin(email));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUser(@Valid @RequestBody RegisterRequest request) {
+        String email = SecurityUtil.getCurrentUser();
+        Long id = userService.getUserIdByEmail(email);
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
     @PostMapping

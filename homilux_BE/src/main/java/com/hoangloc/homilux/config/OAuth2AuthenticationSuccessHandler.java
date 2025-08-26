@@ -1,5 +1,6 @@
 package com.hoangloc.homilux.config;
 
+import com.hoangloc.homilux.entities.enums.AuthProvider;
 import com.hoangloc.homilux.services.SecurityUtil;
 import com.hoangloc.homilux.services.UserService;
 import jakarta.servlet.ServletException;
@@ -9,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -26,24 +29,24 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        // 1. Lấy ra đối tượng Authentication, nó chứa đủ thông tin cần thiết
-        if (!(authentication.getPrincipal() instanceof CustomOAuth2User)) {
-            super.onAuthenticationSuccess(request, response, authentication);
-            return;
-        }
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        // 2. Tạo Refresh Token
-//        String accessToken = securityUtil.generateAccessToken(authentication);
-        String refreshToken = securityUtil.generateRefreshToken(authentication);
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
 
-        userService.saveRefreshToken(refreshToken, authentication.getName());
+        userService.upsertOAuth2User(email, name, AuthProvider.GOOGLE);
 
-        // 3. Xóa các thuộc tính không cần thiết để dọn dẹp session
-        clearAuthenticationAttributes(request);
+        UsernamePasswordAuthenticationToken authenticationGoogle =
+                new UsernamePasswordAuthenticationToken(email, "");
+
+        String accessToken = securityUtil.generateAccessToken(authenticationGoogle);
+        String refreshToken = securityUtil.generateRefreshToken(authenticationGoogle);
+        userService.saveRefreshToken(refreshToken, email);
 
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refreshToken)
                 .httpOnly(true)
+                .sameSite("None")
                 .secure(true)
                 .path("/")
                 .maxAge(refreshTokenExpiration)
@@ -51,10 +54,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         response.addHeader(HttpHeaders.SET_COOKIE, resCookies.toString());
 
-        // 4. Xây dựng URL chuyển hướng với access token
-        String targetUrl = "http://localhost:3000/oauth2/redirect";
-
-        // 5. Thực hiện chuyển hướng
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        String target = String.format(
+                "%s/oauth2/redirect#access_token=%s",
+                "http://localhost:3000", accessToken
+        );
+        getRedirectStrategy().sendRedirect(request, response, target);
     }
 }
