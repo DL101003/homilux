@@ -1,10 +1,15 @@
 package com.hoangloc.homilux.controllers;
 
+import com.hoangloc.homilux.dtos.ResultPaginationDto;
 import com.hoangloc.homilux.dtos.paymentDto.PaymentRequest;
 import com.hoangloc.homilux.dtos.paymentDto.PaymentResponse;
+import com.hoangloc.homilux.entities.Payment;
 import com.hoangloc.homilux.services.PaymentService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +28,11 @@ public class PaymentController {
             @PathVariable Long bookingId,
             @Valid @RequestBody PaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.createPayment(bookingId, request));
+    }
+
+    @GetMapping("/payments")
+    public ResponseEntity<ResultPaginationDto> getAllPayments(@Filter Specification<Payment> spec, Pageable pageable) {
+        return ResponseEntity.ok(paymentService.getAll(spec, pageable));
     }
 
     @GetMapping("/bookings/{bookingId}/payments")

@@ -47,7 +47,6 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         this.emailService = emailService;
     }
 
-
     public BookingResponse createBooking(BookingCreationRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
@@ -109,7 +108,7 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
     @Transactional(readOnly = true)
     public BookingResponse getBookingById(Long id) {
         return bookingRepository.findById(id)
-                .map(this::toResponse) // <-- Sử dụng method reference
+                .map(this::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
     }
 
@@ -117,11 +116,7 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", bookingId));
 
-        // Thêm logic kiểm tra chuyển đổi trạng thái hợp lệ ở đây nếu cần
-        // Ví dụ: không thể chuyển từ CANCELLED sang CONFIRMED
-
         booking.setStatus(newStatus);
-        // Nếu chuyển sang COMPLETED, có thể set contractSigningDate
         if (newStatus == BookingStatus.COMPLETED && booking.getContractSigningDate() == null) {
             booking.setContractSigningDate(LocalDate.now());
         }
@@ -170,7 +165,7 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
     }
 
     private UserResponse toUserSummaryResponse(User user) {
-        return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getAuthProvider(), user.getPhoneNumber(), user.getRole().getId(), user.getRole().getName());
+        return new UserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getAuthProvider(), user.getPhoneNumber(), user.getRole() != null ? user.getRole().getId() : null, user.getRole() != null ? user.getRole().getName() : null);
     }
 
     private EventTypeResponse toEventTypeResponse(EventType eventType) {
@@ -191,11 +186,8 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
 
         Page<Booking> bookingPage = bookingRepository.findByUser(currentUser, pageable);
 
-        // Chuyển đổi Page<Booking> thành ResultPaginationDto
-        // (Bạn có thể đã có logic này ở chỗ khác, đây là ví dụ)
-        // Giả sử bạn có BookingDto
         List<BookingResponse> bookingDtos = bookingPage.getContent().stream()
-                .map(this::toResponse) // một phương thức chuyển đổi
+                .map(this::toResponse)
                 .collect(Collectors.toList());
 
         ResultPaginationDto.Meta meta = new ResultPaginationDto.Meta(

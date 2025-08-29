@@ -1,10 +1,13 @@
 package com.hoangloc.homilux.services;
 
+import com.hoangloc.homilux.annotation.AbstractPaginationService;
 import com.hoangloc.homilux.config.VNPayConfig;
 import com.hoangloc.homilux.dtos.paymentDto.PaymentRequest;
 import com.hoangloc.homilux.dtos.paymentDto.PaymentResponse;
+import com.hoangloc.homilux.dtos.userDto.UserResponse;
 import com.hoangloc.homilux.entities.Booking;
 import com.hoangloc.homilux.entities.Payment;
+import com.hoangloc.homilux.entities.User;
 import com.hoangloc.homilux.entities.enums.PaymentMethod;
 import com.hoangloc.homilux.entities.enums.PaymentStatus;
 import com.hoangloc.homilux.exceptions.InvalidRequestException;
@@ -13,6 +16,8 @@ import com.hoangloc.homilux.repositories.BookingRepository;
 import com.hoangloc.homilux.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +35,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class PaymentService {
+public class PaymentService extends AbstractPaginationService<Payment, PaymentResponse> {
 
     private final PaymentRepository paymentRepository;
 
@@ -40,7 +44,14 @@ public class PaymentService {
 
     private final VNPayConfig vnPayConfig;
 
-    
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, VNPayConfig vnPayConfig) {
+        super(paymentRepository);
+        this.paymentRepository = paymentRepository;
+        this.bookingRepository = bookingRepository;
+        this.vnPayConfig = vnPayConfig;
+    }
+
+
     @Transactional
     public PaymentResponse createPayment(Long bookingId, PaymentRequest request) {
         Booking booking = bookingRepository.findById(bookingId)
@@ -108,8 +119,8 @@ public class PaymentService {
         log.info("Deleted payment {} and updated amountPaid for booking {}", paymentId, booking.getId());
     }
 
-    // Helper mapper
-    private PaymentResponse toResponse(Payment payment) {
+    @Override
+    protected PaymentResponse toResponse(Payment payment) {
         return new PaymentResponse(
                 payment.getId(),
                 payment.getAmount(),
@@ -245,4 +256,5 @@ public boolean handleVNPayCallback(Map<String, String> params) throws Exception 
         }
         return hexString.toString();
     }
+
 }

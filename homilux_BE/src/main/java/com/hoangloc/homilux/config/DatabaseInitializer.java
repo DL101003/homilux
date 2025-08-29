@@ -55,6 +55,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             // PAYMENTS permissions
             arr.add(new Permission("Get payments for booking", "/api/v1/bookings/{bookingId}/payments", "GET", "PAYMENTS"));
+            arr.add(new Permission("Get all payments", "/api/v1/payments", "GET", "PAYMENTS"));
             arr.add(new Permission("Create a payment", "/api/v1/bookings/{bookingId}/payments", "POST", "PAYMENTS"));
             arr.add(new Permission("Get payment by id", "/api/v1/payments/{paymentId}", "GET", "PAYMENTS"));
             arr.add(new Permission("Delete payment", "/api/v1/payments/{id}", "DELETE", "PAYMENTS"));
@@ -90,6 +91,9 @@ public class DatabaseInitializer implements CommandLineRunner {
             // FILES permissions
             arr.add(new Permission("Upload files", "/api/v1/files", "POST", "FILES"));
 
+            // PERMISSIONS permissions
+            arr.add(new Permission("Get all permissions", "/api/v1/permissions", "GET", "PERMISSIONS"));
+
             permissionRepository.saveAll(arr);
         }
 
@@ -98,12 +102,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             Role roleAdmin = new Role();
             roleAdmin.setName("ADMIN");
             roleAdmin.setPermissions(allPermissions);
-            
-            Role roleUser = new Role();
-            roleUser.setName("USER");
-            
             roleRepository.save(roleAdmin);
-            roleRepository.save(roleUser);
         }
 
         if (countUsers == 0) {

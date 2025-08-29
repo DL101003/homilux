@@ -55,22 +55,6 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
     }
 
     @Transactional
-    public void processOAuthPostLogin(String email, String name, AuthProvider authProvider) {
-
-        userRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    User newUser = new User();
-                    newUser.setEmail(email);
-                    newUser.setFullName(name);
-                    newUser.setAuthProvider(authProvider);
-                    newUser.setRole(null);
-                    newUser.setPassword(null);
-
-                    return userRepository.save(newUser);
-                });
-    }
-    
-    @Transactional
     public UserResponse updateUser(Long id, RegisterRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
@@ -117,14 +101,14 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
     @Override
     protected UserResponse toResponse(User user) {
         return new UserResponse(
-                user.getId(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getAuthProvider(),
-                user.getPhoneNumber(),
-                user.getRole().getId(),
-                user.getRole().getName()
-        );
+        user.getId(),
+        user.getFullName(),
+        user.getEmail(),
+        user.getAuthProvider(),
+        user.getPhoneNumber(),
+        user.getRole() != null ? user.getRole().getId() : null,
+        user.getRole() != null ? user.getRole().getName() : null
+);
     }
 
     @Transactional

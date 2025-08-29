@@ -18,6 +18,10 @@ public class PermissionInterceptorConfiguration implements WebMvcConfigurer {
         String[] whiteList = {
                 "/login/**", "/oauth2/**",
                 "/api/v1/payments/callback",
+                "/api/v1/event-types/**",
+                "/api/v1/services/**",
+                "/api/v1/reviews/**",
+                "/api/v1/bookings/**",
                 "/v3/api-docs/**",
                 "/api/v1/auth/**",
                 "/api/v1/files",

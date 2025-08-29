@@ -75,7 +75,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(whitelist).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/event-types").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/event-types/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
+                                .requestMatchers("/api/v1/bookings/me").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))

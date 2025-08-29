@@ -41,7 +41,7 @@ public class EmailService {
     public void sendEmailFromTemplateSync(String to, String subject, String templateName, String username, Object value) {
         Context context = new Context();
         context.setVariable("name", username);
-//        context.setVariable("jobs", value);
+        context.setVariable("booking", value);
         String content = this.templateEngine.process(templateName, context);
         this.sendEmailSync(to, subject, content, false, true);
     }
