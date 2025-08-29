@@ -12,11 +12,22 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UserRouteImport } from './routes/_user'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AdminRouteImport } from './routes/_admin'
-import { Route as UserIndexRouteImport } from './routes/_user/index'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as UserProfileRouteImport } from './routes/_user/profile'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
+import { Route as UserBookingsMeRouteImport } from './routes/_user/bookings.me'
+import { Route as PublicPaymentCallbackRouteImport } from './routes/_public/payment.callback'
 import { Route as PublicOauth2RedirectRouteImport } from './routes/_public/oauth2.redirect'
+import { Route as AuthenticatedBookingsIdRouteImport } from './routes/_authenticated/bookings.$id'
+import { Route as AuthenticatedBookingNewRouteImport } from './routes/_authenticated/booking.new'
+import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin.users'
+import { Route as AdminAdminServicesRouteImport } from './routes/_admin/admin.services'
+import { Route as AdminAdminRolesRouteImport } from './routes/_admin/admin.roles'
+import { Route as AdminAdminPaymentsRouteImport } from './routes/_admin/admin.payments'
+import { Route as AdminAdminEventTypesRouteImport } from './routes/_admin/admin.event-types'
 import { Route as AdminAdminDashboardRouteImport } from './routes/_admin/admin.dashboard'
+import { Route as AdminAdminBookingsRouteImport } from './routes/_admin/admin.bookings'
 
 const UserRoute = UserRouteImport.update({
   id: '/_user',
@@ -30,9 +41,14 @@ const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserIndexRoute = UserIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserProfileRoute = UserProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => UserRoute,
 } as any)
 const PublicRegisterRoute = PublicRegisterRouteImport.update({
@@ -45,71 +61,194 @@ const PublicLoginRoute = PublicLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserBookingsMeRoute = UserBookingsMeRouteImport.update({
+  id: '/bookings/me',
+  path: '/bookings/me',
+  getParentRoute: () => UserRoute,
+} as any)
+const PublicPaymentCallbackRoute = PublicPaymentCallbackRouteImport.update({
+  id: '/_public/payment/callback',
+  path: '/payment/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicOauth2RedirectRoute = PublicOauth2RedirectRouteImport.update({
   id: '/_public/oauth2/redirect',
   path: '/oauth2/redirect',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedBookingsIdRoute = AuthenticatedBookingsIdRouteImport.update({
+  id: '/bookings/$id',
+  path: '/bookings/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBookingNewRoute = AuthenticatedBookingNewRouteImport.update({
+  id: '/booking/new',
+  path: '/booking/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AdminAdminUsersRoute = AdminAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminServicesRoute = AdminAdminServicesRouteImport.update({
+  id: '/admin/services',
+  path: '/admin/services',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminRolesRoute = AdminAdminRolesRouteImport.update({
+  id: '/admin/roles',
+  path: '/admin/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminPaymentsRoute = AdminAdminPaymentsRouteImport.update({
+  id: '/admin/payments',
+  path: '/admin/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminEventTypesRoute = AdminAdminEventTypesRouteImport.update({
+  id: '/admin/event-types',
+  path: '/admin/event-types',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAdminDashboardRoute = AdminAdminDashboardRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminBookingsRoute = AdminAdminBookingsRouteImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
-  '/': typeof UserIndexRoute
+  '/profile': typeof UserProfileRoute
+  '/admin/bookings': typeof AdminAdminBookingsRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
+  '/admin/event-types': typeof AdminAdminEventTypesRoute
+  '/admin/payments': typeof AdminAdminPaymentsRoute
+  '/admin/roles': typeof AdminAdminRolesRoute
+  '/admin/services': typeof AdminAdminServicesRoute
+  '/admin/users': typeof AdminAdminUsersRoute
+  '/booking/new': typeof AuthenticatedBookingNewRoute
+  '/bookings/$id': typeof AuthenticatedBookingsIdRoute
   '/oauth2/redirect': typeof PublicOauth2RedirectRoute
+  '/payment/callback': typeof PublicPaymentCallbackRoute
+  '/bookings/me': typeof UserBookingsMeRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
-  '/': typeof UserIndexRoute
+  '/profile': typeof UserProfileRoute
+  '/admin/bookings': typeof AdminAdminBookingsRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
+  '/admin/event-types': typeof AdminAdminEventTypesRoute
+  '/admin/payments': typeof AdminAdminPaymentsRoute
+  '/admin/roles': typeof AdminAdminRolesRoute
+  '/admin/services': typeof AdminAdminServicesRoute
+  '/admin/users': typeof AdminAdminUsersRoute
+  '/booking/new': typeof AuthenticatedBookingNewRoute
+  '/bookings/$id': typeof AuthenticatedBookingsIdRoute
   '/oauth2/redirect': typeof PublicOauth2RedirectRoute
+  '/payment/callback': typeof PublicPaymentCallbackRoute
+  '/bookings/me': typeof UserBookingsMeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
-  '/_authenticated': typeof AuthenticatedRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_user': typeof UserRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
-  '/_user/': typeof UserIndexRoute
+  '/_user/profile': typeof UserProfileRoute
+  '/_admin/admin/bookings': typeof AdminAdminBookingsRoute
   '/_admin/admin/dashboard': typeof AdminAdminDashboardRoute
+  '/_admin/admin/event-types': typeof AdminAdminEventTypesRoute
+  '/_admin/admin/payments': typeof AdminAdminPaymentsRoute
+  '/_admin/admin/roles': typeof AdminAdminRolesRoute
+  '/_admin/admin/services': typeof AdminAdminServicesRoute
+  '/_admin/admin/users': typeof AdminAdminUsersRoute
+  '/_authenticated/booking/new': typeof AuthenticatedBookingNewRoute
+  '/_authenticated/bookings/$id': typeof AuthenticatedBookingsIdRoute
   '/_public/oauth2/redirect': typeof PublicOauth2RedirectRoute
+  '/_public/payment/callback': typeof PublicPaymentCallbackRoute
+  '/_user/bookings/me': typeof UserBookingsMeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/login'
     | '/register'
-    | '/'
+    | '/profile'
+    | '/admin/bookings'
     | '/admin/dashboard'
+    | '/admin/event-types'
+    | '/admin/payments'
+    | '/admin/roles'
+    | '/admin/services'
+    | '/admin/users'
+    | '/booking/new'
+    | '/bookings/$id'
     | '/oauth2/redirect'
+    | '/payment/callback'
+    | '/bookings/me'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/' | '/admin/dashboard' | '/oauth2/redirect'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/profile'
+    | '/admin/bookings'
+    | '/admin/dashboard'
+    | '/admin/event-types'
+    | '/admin/payments'
+    | '/admin/roles'
+    | '/admin/services'
+    | '/admin/users'
+    | '/booking/new'
+    | '/bookings/$id'
+    | '/oauth2/redirect'
+    | '/payment/callback'
+    | '/bookings/me'
   id:
     | '__root__'
+    | '/'
     | '/_admin'
     | '/_authenticated'
     | '/_user'
     | '/_public/login'
     | '/_public/register'
-    | '/_user/'
+    | '/_user/profile'
+    | '/_admin/admin/bookings'
     | '/_admin/admin/dashboard'
+    | '/_admin/admin/event-types'
+    | '/_admin/admin/payments'
+    | '/_admin/admin/roles'
+    | '/_admin/admin/services'
+    | '/_admin/admin/users'
+    | '/_authenticated/booking/new'
+    | '/_authenticated/bookings/$id'
     | '/_public/oauth2/redirect'
+    | '/_public/payment/callback'
+    | '/_user/bookings/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AuthenticatedRoute: typeof AuthenticatedRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   UserRoute: typeof UserRouteWithChildren
   PublicLoginRoute: typeof PublicLoginRoute
   PublicRegisterRoute: typeof PublicRegisterRoute
   PublicOauth2RedirectRoute: typeof PublicOauth2RedirectRoute
+  PublicPaymentCallbackRoute: typeof PublicPaymentCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -135,11 +274,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_user/': {
-      id: '/_user/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof UserIndexRouteImport
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_user/profile': {
+      id: '/_user/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof UserProfileRouteImport
       parentRoute: typeof UserRoute
     }
     '/_public/register': {
@@ -156,12 +302,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_user/bookings/me': {
+      id: '/_user/bookings/me'
+      path: '/bookings/me'
+      fullPath: '/bookings/me'
+      preLoaderRoute: typeof UserBookingsMeRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/_public/payment/callback': {
+      id: '/_public/payment/callback'
+      path: '/payment/callback'
+      fullPath: '/payment/callback'
+      preLoaderRoute: typeof PublicPaymentCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/oauth2/redirect': {
       id: '/_public/oauth2/redirect'
       path: '/oauth2/redirect'
       fullPath: '/oauth2/redirect'
       preLoaderRoute: typeof PublicOauth2RedirectRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/bookings/$id': {
+      id: '/_authenticated/bookings/$id'
+      path: '/bookings/$id'
+      fullPath: '/bookings/$id'
+      preLoaderRoute: typeof AuthenticatedBookingsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/booking/new': {
+      id: '/_authenticated/booking/new'
+      path: '/booking/new'
+      fullPath: '/booking/new'
+      preLoaderRoute: typeof AuthenticatedBookingNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_admin/admin/users': {
+      id: '/_admin/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminAdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/services': {
+      id: '/_admin/admin/services'
+      path: '/admin/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AdminAdminServicesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/roles': {
+      id: '/_admin/admin/roles'
+      path: '/admin/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminAdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/payments': {
+      id: '/_admin/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminAdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/event-types': {
+      id: '/_admin/admin/event-types'
+      path: '/admin/event-types'
+      fullPath: '/admin/event-types'
+      preLoaderRoute: typeof AdminAdminEventTypesRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_admin/admin/dashboard': {
       id: '/_admin/admin/dashboard'
@@ -170,36 +379,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/bookings': {
+      id: '/_admin/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminAdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAdminBookingsRoute: typeof AdminAdminBookingsRoute
   AdminAdminDashboardRoute: typeof AdminAdminDashboardRoute
+  AdminAdminEventTypesRoute: typeof AdminAdminEventTypesRoute
+  AdminAdminPaymentsRoute: typeof AdminAdminPaymentsRoute
+  AdminAdminRolesRoute: typeof AdminAdminRolesRoute
+  AdminAdminServicesRoute: typeof AdminAdminServicesRoute
+  AdminAdminUsersRoute: typeof AdminAdminUsersRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminBookingsRoute: AdminAdminBookingsRoute,
   AdminAdminDashboardRoute: AdminAdminDashboardRoute,
+  AdminAdminEventTypesRoute: AdminAdminEventTypesRoute,
+  AdminAdminPaymentsRoute: AdminAdminPaymentsRoute,
+  AdminAdminRolesRoute: AdminAdminRolesRoute,
+  AdminAdminServicesRoute: AdminAdminServicesRoute,
+  AdminAdminUsersRoute: AdminAdminUsersRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedBookingNewRoute: typeof AuthenticatedBookingNewRoute
+  AuthenticatedBookingsIdRoute: typeof AuthenticatedBookingsIdRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedBookingNewRoute: AuthenticatedBookingNewRoute,
+  AuthenticatedBookingsIdRoute: AuthenticatedBookingsIdRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 interface UserRouteChildren {
-  UserIndexRoute: typeof UserIndexRoute
+  UserProfileRoute: typeof UserProfileRoute
+  UserBookingsMeRoute: typeof UserBookingsMeRoute
 }
 
 const UserRouteChildren: UserRouteChildren = {
-  UserIndexRoute: UserIndexRoute,
+  UserProfileRoute: UserProfileRoute,
+  UserBookingsMeRoute: UserBookingsMeRoute,
 }
 
 const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AuthenticatedRoute: AuthenticatedRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   UserRoute: UserRouteWithChildren,
   PublicLoginRoute: PublicLoginRoute,
   PublicRegisterRoute: PublicRegisterRoute,
   PublicOauth2RedirectRoute: PublicOauth2RedirectRoute,
+  PublicPaymentCallbackRoute: PublicPaymentCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
