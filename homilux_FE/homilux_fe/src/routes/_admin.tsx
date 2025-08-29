@@ -1,6 +1,7 @@
 // src/routes/_admin.tsx
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_admin')({
@@ -26,12 +27,3 @@ export const Route = createFileRoute('/_admin')({
   },
   component: AdminLayout,
 });
-
-function AdminLayout() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Admin sidebar, header, etc. */}
-      <Outlet />
-    </div>
-  );
-}
