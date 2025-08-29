@@ -1,6 +1,7 @@
 // src/routes/_user.tsx
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
+import { UserLayout } from '@/components/layout/UserLayout';
 
 export const Route = createFileRoute('/_user')({
   beforeLoad: async ({ location }) => {
@@ -24,12 +25,3 @@ export const Route = createFileRoute('/_user')({
   },
   component: UserLayout,
 });
-
-function UserLayout() {
-  return (
-    <div className="min-h-screen">
-      {/* User navigation, header, etc. */}
-      <Outlet />
-    </div>
-  );
-}

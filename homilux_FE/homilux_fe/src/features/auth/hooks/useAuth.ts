@@ -17,11 +17,19 @@ export const useLogin = () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
       toast.success('Login successful!');
       
-      // Navigate based on role
-      if (data.role) {
-        navigate({ to: '/admin/dashboard' });
+      // Get redirect URL from search params
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTo = searchParams.get('redirect');
+      
+      if (redirectTo) {
+        window.location.href = redirectTo;
       } else {
-        navigate({ to: '/' });
+        // Navigate based on role
+        if (data.role) {
+          navigate({ to: '/admin/dashboard' });
+        } else {
+          navigate({ to: '/bookings/me' });
+        }
       }
     },
     onError: (error: Error) => {

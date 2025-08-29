@@ -1,4 +1,4 @@
-// src/routes/_public/oauth2.redirect.tsx
+// src/routes/_public/oauth2.redirect.tsx (Update)
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_public/oauth2/redirect')({
 
 function OAuth2RedirectHandler() {
   const navigate = useNavigate();
-  const { setAccessToken, setUser, hasRole } = useAuthStore();
+  const { setAccessToken, setUser } = useAuthStore();
 
   useEffect(() => {
     const handleOAuth2Redirect = async () => {
@@ -39,7 +39,7 @@ function OAuth2RedirectHandler() {
         if (userData.role) {
           navigate({ to: '/admin/dashboard' });
         } else {
-          navigate({ to: '/' });
+          navigate({ to: '/bookings/me' });
         }
       } catch (error) {
         console.error('OAuth2 redirect error:', error);
@@ -49,7 +49,7 @@ function OAuth2RedirectHandler() {
     };
 
     handleOAuth2Redirect();
-  }, [navigate, setAccessToken, setUser, hasRole]);
+  }, [navigate, setAccessToken, setUser]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

@@ -1,4 +1,4 @@
-// src/routes/_authenticated.tsx
+// src/routes/_authenticated.tsx (Update lại)
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/features/auth/stores/auth.store';
 
@@ -15,9 +15,5 @@ export const Route = createFileRoute('/_authenticated')({
       });
     }
   },
-  component: AuthenticatedLayout,
+  component: () => <Outlet />,
 });
-
-function AuthenticatedLayout() {
-  return <Outlet />;
-}
