@@ -8,6 +8,9 @@ import com.hoangloc.homilux.exceptions.ResourceNotFoundException;
 import com.hoangloc.homilux.repositories.EventTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +33,15 @@ public class EventTypeService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "eventTypeList", key = "'all'")
     public List<EventTypeResponse> getAll() {
         return eventTypeRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "eventTypeList", allEntries = true),
+            @CacheEvict(cacheNames = "eventTypeById", key = "#id")
+    })
     public EventTypeResponse update(Long id, EventTypeRequest request) {
         EventType eventType = eventTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("EventType", id));
@@ -52,6 +60,7 @@ public class EventTypeService {
         return new EventTypeResponse(eventType.getId(), eventType.getName());
     }
 
+    @Cacheable(cacheNames = "eventTypeById", key = "#id")
     public EventTypeResponse getEventTypeById(Long id) {
         return eventTypeRepository.findById(id).map(this::toResponse).
                 orElseThrow(() -> new ResourceNotFoundException("EventType", id));

@@ -9,7 +9,10 @@ import org.hibernate.annotations.SQLRestriction;
 import java.util.Set;
 
 @Entity
-@Table(name = "reviews")
+@Table(name = "reviews", indexes = {
+        @Index(name = "idx_review_booking", columnList = "booking_id"),
+        @Index(name = "idx_review_user", columnList = "user_id")
+})
 @Getter
 @Setter
 @AllArgsConstructor

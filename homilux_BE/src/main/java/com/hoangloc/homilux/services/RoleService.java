@@ -13,6 +13,9 @@ import com.hoangloc.homilux.repositories.RoleRepository;
 import com.hoangloc.homilux.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +51,10 @@ public class RoleService {
 
     
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "permissionList", allEntries = true),
+            @CacheEvict(cacheNames = "roleById", allEntries = true)
+    })
     public RoleResponse updateRole(Long id, RoleRequest request) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role", id));
@@ -89,6 +96,7 @@ public class RoleService {
 
     
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "roleById", key = "#id")
     public RoleResponse getRoleById(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role", id));

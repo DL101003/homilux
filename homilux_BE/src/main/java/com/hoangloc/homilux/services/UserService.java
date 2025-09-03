@@ -13,6 +13,10 @@ import com.hoangloc.homilux.exceptions.ResourceNotFoundException;
 import com.hoangloc.homilux.repositories.RoleRepository;
 import com.hoangloc.homilux.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,10 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
     }
 
     @Transactional
+    @Caching(put = {
+            @CachePut(cacheNames = "userById", key = "#result.id", condition = "#result != null"),
+            @CachePut(cacheNames = "userByEmail", key = "#result.email", condition = "#result != null")
+    })
     public UserResponse createUser(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new DuplicateResourceException("User with email '" + request.email() + "' already exists.");
@@ -73,6 +81,10 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
 
     
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "userById", key = "#id"),
+            @CacheEvict(cacheNames = "userByEmail", allEntries = true)
+    })
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
@@ -83,6 +95,7 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "userById", key = "#id")
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
@@ -129,12 +142,14 @@ public class UserService extends AbstractPaginationService<User, UserResponse> {
         userRepository.save(currentUser);
     }
 
+    @Cacheable(cacheNames = "userByEmail", key = "#email")
     public UserResponse getUserLogin(String email) {
         User currentUserLogin = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", email));
         return toResponse(currentUserLogin);
     }
 
+    @Cacheable(cacheNames = "userIdByEmail", key = "#email")
     public Long getUserIdByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", email));

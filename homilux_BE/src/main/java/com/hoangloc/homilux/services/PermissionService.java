@@ -4,6 +4,7 @@ import com.hoangloc.homilux.dtos.permissionDto.PermissionResponse;
 import com.hoangloc.homilux.entities.Permission;
 import com.hoangloc.homilux.repositories.PermissionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "permissionList", key = "'all'")
     public List<PermissionResponse> getAllPermissions() {
         return permissionRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }

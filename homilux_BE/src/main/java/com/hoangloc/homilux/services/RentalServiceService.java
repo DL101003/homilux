@@ -7,6 +7,7 @@ import com.hoangloc.homilux.exceptions.DuplicateResourceException;
 import com.hoangloc.homilux.exceptions.ResourceNotFoundException;
 import com.hoangloc.homilux.repositories.RentalServiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 public class RentalServiceService {
 
     private final RentalServiceRepository rentalServiceRepository;
-
 
     public RentalServiceResponse createService(RentalServiceRequest request) {
         // Kiểm tra trùng lặp tên dịch vụ
@@ -41,11 +41,13 @@ public class RentalServiceService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "rentalServiceList", key = "'all'")
     public List<RentalServiceResponse> getAllServices() {
         return rentalServiceRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "rentalServiceById", key = "#id")
     public RentalServiceResponse getServiceById(Long id) {
         return rentalServiceRepository.findById(id)
                 .map(this::toResponse)

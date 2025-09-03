@@ -14,7 +14,11 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings", indexes = {
+        @Index(name = "idx_booking_user", columnList = "user_id"),
+        @Index(name = "idx_booking_status", columnList = "status"),
+        @Index(name = "idx_booking_event_date", columnList = "event_datetime")
+})
 @Getter
 @Setter
 @AllArgsConstructor

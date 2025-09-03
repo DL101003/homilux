@@ -16,6 +16,10 @@ import com.hoangloc.homilux.repositories.EventTypeRepository;
 import com.hoangloc.homilux.repositories.RentalServiceRepository;
 import com.hoangloc.homilux.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,6 +51,11 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         this.emailService = emailService;
     }
 
+    @Caching(put = {
+            @CachePut(cacheNames = "bookingById", key = "#bookingId")
+    }, evict = {
+            @CacheEvict(cacheNames = "bookingListCurrentUser", allEntries = true)
+    })
     public BookingResponse createBooking(BookingCreationRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
@@ -106,6 +115,7 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "bookingById", key = "#id")
     public BookingResponse getBookingById(Long id) {
         return bookingRepository.findById(id)
                 .map(this::toResponse)
@@ -172,12 +182,18 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         return new EventTypeResponse(eventType.getId(), eventType.getName());
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "bookingById", key = "#id"),
+            @CacheEvict(cacheNames = "bookingListCurrentUser", allEntries = true)
+    })
     public void deleteBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
         bookingRepository.delete(booking);
     }
 
+    @Cacheable(cacheNames = "bookingListCurrentUser",
+            key = "'p:'+ #pageable.pageNumber + ':s:'+ #pageable.pageSize")
     public ResultPaginationDto getBookingsForCurrentUser(Pageable pageable) {
         String currentUsername = SecurityUtil.getCurrentUser();
 
