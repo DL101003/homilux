@@ -1,0 +1,115 @@
+version: '3.9'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0.30
+    container_name: homilux-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-homilux}
+      MYSQL_USER: ${MYSQL_USER:-homilux_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-homilux_pass}
+    ports:
+      - "3307:3306"  # Map to 3307 để tránh conflict với MySQL local
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - homilux-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: homilux-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"  # Map to 6380 để tránh conflict
+    volumes:
+      - redis_data:/data
+    networks:
+      - homilux-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./homilux_BE
+      dockerfile: Dockerfile
+    container_name: homilux-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Database config
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-homilux}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-homilux_user}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-homilux_pass}
+      
+      # Redis config
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      
+      # JWT config
+      HOMILUX_JWT_BASE64_SECRET: ${JWT_SECRET:-qoAEABDke07+AVLepXB4aCMtsT0wMAqR5x2VFyldsnx6e75YQkJH2UcZKTjEyoNgG71SBCXfq5N6NVZxWOfsHQ==}
+      
+      # Upload config
+      HOMILUX_UPLOAD_FILE_BASE_URI: file:///app/uploads/
+      
+      # Mail config (keep existing)
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-hani101003@gmail.com}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-lzznxdnnqmqpcqdp}
+      
+      # OAuth2 config (keep existing)
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-806769299103-chl9isknjjboalmgu947mfvmf89sl5o8.apps.googleusercontent.com}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-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}
+      
+      # VNPay config
+      VNPAY_TMN_CODE: ${VNPAY_TMN_CODE:-0XSUQAMQ}
+      VNPAY_HASH_SECRET: ${VNPAY_HASH_SECRET:-1I3JASKUXS7JHX9XOGFPJZQ0LG46HDLG}
+      VNPAY_RETURN_URL: ${VNPAY_RETURN_URL:-http://localhost:8080/api/v1/payments/callback}
+      
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - homilux-network
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./homilux_FE/homilux_fe
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api/v1}
+    container_name: homilux-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - homilux-network
+    environment:
+      - NODE_ENV=production
+
+networks:
+  homilux-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads_data:

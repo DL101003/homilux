@@ -192,8 +192,6 @@ public class BookingService extends AbstractPaginationService<Booking, BookingRe
         bookingRepository.delete(booking);
     }
 
-    @Cacheable(cacheNames = "bookingListCurrentUser",
-            key = "'p:'+ #pageable.pageNumber + ':s:'+ #pageable.pageSize")
     public ResultPaginationDto getBookingsForCurrentUser(Pageable pageable) {
         String currentUsername = SecurityUtil.getCurrentUser();
 
