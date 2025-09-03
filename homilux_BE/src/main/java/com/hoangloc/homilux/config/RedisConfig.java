@@ -21,7 +21,7 @@ import java.util.Map;
 public class RedisConfig {
 
     @Bean
-    RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
 
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
@@ -64,4 +64,5 @@ public class RedisConfig {
                 .withInitialCacheConfigurations(conf)
                 .build();
     }
+
 }
